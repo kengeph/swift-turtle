@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<!-- This is Swift Turtle Labs Website. Weekly availability meant for MPA Church men's group -->
+
+<html>
+
+<head>
+    <title>Weekly Availablity</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+<!--    Scripts For Modul-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+    
+    <link rel='stylesheet' href='../bootstrap/css/bootstrap.css' type='text/css'/>
+    <link rel='stylesheet' href='../bootstrap/js/bootstrap.min.js' type='text/css'/>
+    <link rel='stylesheet' href='../bootstrap/css/bootstrap.css.map' dftype='text/css'/>    
+	<link rel='stylesheet' href='style.css' type='text/css'/>
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+    <script type="text/javascript" src="jquery-1.6.4.min.js"></script>
+    
+	<script type="text/javascript" src='javascript.js'></script>
+<!--
+    <style type="text/css">
+        #warning-message { display: none; }
+        @media only screen and (orientation:portrait){
+            .wrapper { display:none; }
+            .footer { display:none; }
+            #warning-message { display:block; font-size:3rem; color:red; width:80%; }
+        }
+        @media only screen and (orientation:landscape){
+            #warning-message { display:none; }
+        }
+    </style>
+-->
+    <meta id="" name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div id="warning-message">Turn your device sideways.<br><br>This website is only viewable in landscape mode.</div>
+    <div class="wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12 title"><h1>Men's Group Availability</h1></div>
+            </div>
+            <div class="row halfpush"></div>
+            <form action="insert.php" method="post" id="theform">
+                <div class="row">
+                    <div class="form-horizontal">
+                      <div class="form-group">
+                          <label class="control-label text-right col-xs-2" for="name">Name:</label>
+                          <div class="col-xs-8">
+                            <input type="name" class="form-control" name="name" id="name" placeholder="Enter Full Name">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label class="control-label text-right col-xs-2" for="phone">Phone:</label>
+                          <div class="col-xs-8"> 
+                            <input type="phone" class="form-control" name="phone" id="phone" placeholder="Enter Mobile Phone Number">
+                          </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="control-label text-right col-xs-2" for="email">Email:</label>
+                        <div class="col-xs-8">
+                          <input type="email" class="form-control" name ="email" id="email" placeholder="Enter Email">
+                          <input type="hidden" id="myArray" name="myArray">
+                        </div>
+                      </div>                        
+                <div class="row">
+                    <div class="col-xs-offset-1 col-xs-8" style="text-align: right"><h2>Click the days/times below to show availability: </h2></div>
+                    <div class="col-xs-offset-1 col-xs-1">
+                        <!-- Trigger the modal with a button --><div class="keyImg"  data-toggle="modal" data-target="#myModal"><img src="https://s-media-cache-ak0.pinimg.com/originals/7f/40/36/7f4036e9b79e97b146cdbeb1dcef888c.png"/></div>
+                    </div>
+                      <!-- Modal -->
+                      <div class="modal fade" id="myModal" role="dialog">
+                        <div class="modal-dialog">
+                        <!-- Modal content-->
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                              <h4 class="modal-title">How To Fill Out The Table</h4>
+                            </div>
+                            <div class="modal-body">
+                              <p>Click the cell that corresponds to the day of the week and the time until it represents your average availablity. Once you have put in your name, phone, email, and filled out your average weekly availability, select the submit button at the bottom.<br><br>Tip: You can select a day to toggle all cells in the column or select a time to toggle all cells in the row.</p>
+                            </div>
+                            <div class="modal-footer">
+                              <a type="button" class="btn btn-primary pull-left" href="33.html">Watch The Authentic Manhood Trailer</a>
+                              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    
+                </div>
+                <div class="row key" style="text-align:center">
+                    <div class="col-xs-offset-1 col-xs-1 keyColor"><div style="background-color: white;"></div></div>
+                    <div class="col-xs-2 text-left"><h4>= Available</h4></div>
+                    <div class="col-xs-1 keyColor"><div style="background-color: #f9cf00;"></div></div>
+                    <div class="col-xs-3 text-left"><h4>= Usually Available</h4></div>
+                    <div class="col-xs-1 keyColor"><div style="background-color: #f19f4d;"></div></div>
+                    <div class="col-xs-3 text-left"><h4>= Not Available</h4></div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-offset-1 col-xs-10">
+                    <div class="table-responsive panel panel-default">
+                            <table class="table table-bordered">
+                                <thead>
+                                  <tr>
+                                    <th>Time</th>
+                                    <th href="#" onclick="getBackground(A1, 0); getBackground(A2, 7); getBackground(A3, 14); getBackground(A4, 21); getBackground(A5, 28); getBackground(A6, 35); getBackground(A7, 42); getBackground(A8, 49); getBackground(A9, 56); getBackground(A10, 63); getBackground(A11, 70); getBackground(A12, 77); getBackground(A13, 84); getBackground(A14, 91); getBackground(A15, 98); getBackground(A16, 105);">Sunday</th>
+                                    <th href="#" onclick="getBackground(B1, 1); getBackground(B2, 8); getBackground(B3, 15); getBackground(B4, 22); getBackground(B5, 29); getBackground(B6, 36); getBackground(B7, 43); getBackground(B8, 50); getBackground(B9, 57); getBackground(B10, 64); getBackground(B11, 71); getBackground(B12, 78); getBackground(B13, 85); getBackground(B14, 92); getBackground(B15, 99); getBackground(B16, 106);">Monday</th>
+                                    <th href="#" onclick="getBackground(C1, 2); getBackground(C2, 9); getBackground(C3, 16); getBackground(C4, 23); getBackground(C5, 30); getBackground(C6, 37); getBackground(C7, 44); getBackground(C8, 51); getBackground(C9, 58); getBackground(C10, 65); getBackground(C11, 72); getBackground(C12, 79); getBackground(C13, 86); getBackground(C14, 93); getBackground(C15, 100); getBackground(C16, 107);">Tuesday</th>
+                                    <th href="#" onclick="getBackground(D1, 3); getBackground(D2, 10); getBackground(D3, 17); getBackground(D4, 24); getBackground(D5, 31); getBackground(D6, 38); getBackground(D7, 45); getBackground(D8, 52); getBackground(D9, 59); getBackground(D10, 66); getBackground(D11, 73); getBackground(D12, 80); getBackground(D13, 87); getBackground(D14, 94); getBackground(D15, 101); getBackground(D16, 108);">Wednesday</th>
+                                    <th href="#" onclick="getBackground(E1, 4); getBackground(E2, 11); getBackground(E3, 18); getBackground(E4, 25); getBackground(E5, 32); getBackground(E6, 39); getBackground(E7, 46); getBackground(E8, 53); getBackground(E9, 60); getBackground(E10, 67); getBackground(E11, 74); getBackground(E12, 81); getBackground(E13, 88); getBackground(E14, 95); getBackground(E15, 102); getBackground(E16, 109);">Thursday</th>
+                                    <th href="#" onclick="getBackground(F1, 5); getBackground(F2, 12); getBackground(F3, 19); getBackground(F4, 26); getBackground(F5, 33); getBackground(F6, 40); getBackground(F7, 47); getBackground(F8, 54); getBackground(F9, 61); getBackground(F10, 68); getBackground(F11, 75); getBackground(F12, 82); getBackground(F13, 89); getBackground(F14, 96); getBackground(F15, 103); getBackground(F16, 110);">Friday</th>
+                                    <th href="#" onclick="getBackground(G1, 6); getBackground(G2, 13); getBackground(G3, 20); getBackground(G4, 27); getBackground(G5, 34); getBackground(G6, 41); getBackground(G7, 48); getBackground(G8, 55); getBackground(G9, 62); getBackground(G10, 69); getBackground(G11, 76); getBackground(G12, 83); getBackground(G13, 90); getBackground(G14, 97); getBackground(G15, 104); getBackground(G16, 111);">Saturday</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td class="firstColumn" href="#" onclick="getBackground(A1, 0); getBackground(B1, 1); getBackground(C1, 2); getBackground(D1, 3); getBackground(E1, 4); getBackground(F1, 5); getBackground(G1, 6)">7am - 8am</td>
+                                    <td class="dayColumn" id="A1" href="#" onclick="getBackground(this, 0)"></td>
+                                    <td class="dayColumn" id="B1" href="#" onclick="getBackground(this, 1)"></td>
+                                    <td class="dayColumn" id="C1" href="#" onclick="getBackground(this, 2)"></td>
+                                    <td class="dayColumn" id="D1" href="#" onclick="getBackground(this, 3)"></td>
+                                    <td class="dayColumn" id="E1" href="#" onclick="getBackground(this, 4)"></td>
+                                    <td class="dayColumn" id="F1" href="#" onclick="getBackground(this, 5)"></td>
+                                    <td class="dayColumn" id="G1" href="#" onclick="getBackground(this, 6)"></td>
+                                  </tr>
+                                  <tr>
+                                    <td class="firstColumn" href="#" onclick="getBackground(A2, 7); getBackground(B2, 8); getBackground(C2, 9); getBackground(D2, 10); getBackground(E2, 11); getBackground(F2, 12); getBackground(G2,13)">8am - 9am</td>
+                                    <td class="dayColumn" id="A2" href="#" onclick="getBackground(this, 7)"></td>
+                                    <td class="dayColumn" id="B2" href="#" onclick="getBackground(this, 8)"></td>
+                                    <td class="dayColumn" id="C2" href="#" onclick="getBackground(this, 9)"></td>
+                                    <td class="dayColumn" id="D2" href="#" onclick="getBackground(this, 10)"></td>
+                                    <td class="dayColumn" id="E2" href="#" onclick="getBackground(this, 11)"></td>
+                                    <td class="dayColumn" id="F2" href="#" onclick="getBackground(this, 12)"></td>
+                                    <td class="dayColumn" id="G2" href="#" onclick="getBackground(this, 13)"></td>
+                                  </tr>
+                                  <tr>
+                                    <td class="firstColumn" href="#" onclick="getBackground(A3, 14); getBackground(B3, 15); getBackground(C3, 16); getBackground(D3, 17); getBackground(E3, 18); getBackground(F3, 19); getBackground(G3, 20);">9am - 10am</td>
+                                    <td class="dayColumn" id="A3" href="#" onclick="getBackground(this, 14)"></td>
+                                    <td class="dayColumn" id="B3" href="#" onclick="getBackground(this, 15)"></td>
+                                    <td class="dayColumn" id="C3" href="#" onclick="getBackground(this, 16)"></td>
+                                    <td class="dayColumn" id="D3" href="#" onclick="getBackground(this, 17)"></td>
+                                    <td class="dayColumn" id="E3" href="#" onclick="getBackground(this, 18)"></td>
+                                    <td class="dayColumn" id="F3" href="#" onclick="getBackground(this, 19)"></td>
+                                    <td class="dayColumn" id="G3" href="#" onclick="getBackground(this, 20)"></td>
+                                  </tr>
+                                  <tr>
+                                    <td class="firstColumn" href="#" onclick="getBackground(A4, 21); getBackground(B4, 22); getBackground(C4, 23); getBackground(D4, 24); getBackground(E4, 25); getBackground(F4, 26); getBackground(G4, 27);">10am - 11am</td>
+                                    <td class="dayColumn" id="A4" href="#" onclick="getBackground(this, 21)"></td>
+                                    <td class="dayColumn" id="B4" href="#" onclick="getBackground(this, 22)"></td>
+                                    <td class="dayColumn" id="C4" href="#" onclick="getBackground(this, 23)"></td>
+                                    <td class="dayColumn" id="D4" href="#" onclick="getBackground(this, 24)"></td>
+                                    <td class="dayColumn" id="E4" href="#" onclick="getBackground(this, 25)"></td>
+                                    <td class="dayColumn" id="F4" href="#" onclick="getBackground(this, 26)"></td>
+                                    <td class="dayColumn" id="G4" href="#" onclick="getBackground(this, 27)"></td>
+                                  </tr>
+                                  <tr>
+                                    <td class="firstColumn" href="#" onclick="getBackground(A5, 28); getBackground(B5, 29); getBackground(C5, 30); getBackground(D5, 31); getBackground(E5, 32); getBackground(F5, 33); getBackground(G5, 34);">11am - Noon</td>
+                                    <td class="dayColumn" id="A5" href="#" onclick="getBackground(this, 28)"></td>
+                                    <td class="dayColumn" id="B5" href="#" onclick="getBackground(this, 29)"></td>
+                                    <td class="dayColumn" id="C5" href="#" onclick="getBackground(this, 30)"></td>
+                                    <td class="dayColumn" id="D5" href="#" onclick="getBackground(this, 31)"></td>
+                                    <td class="dayColumn" id="E5" href="#" onclick="getBackground(this, 32)"></td>
+                                    <td class="dayColumn" id="F5" href="#" onclick="getBackground(this, 33)"></td>
+                                    <td class="dayColumn" id="G5" href="#" onclick="getBackground(this, 34)"></td>
+                                  </tr>
+                                  <tr>
+                                    <td class="firstColumn" href="#" onclick="getBackground(A6, 35); getBackground(B6, 36); getBackground(C6, 37); getBackground(D6, 38); getBackground(E6, 39); getBackground(F6, 40); getBackground(G6, 41);">Noon - 1pm</td>
+                                    <td class="dayColumn" id="A6" href="#" onclick="getBackground(this, 35)"></td>
+                                    <td class="dayColumn" id="B6" href="#" onclick="getBackground(this, 36)"></td>
+                                    <td class="dayColumn" id="C6" href="#" onclick="getBackground(this, 37)"></td>
+                                    <td class="dayColumn" id="D6" href="#" onclick="getBackground(this, 38)"></td>
+                                    <td class="dayColumn" id="E6" href="#" onclick="getBackground(this, 39)"></td>
+                                    <td class="dayColumn" id="F6" href="#" onclick="getBackground(this, 40)"></td>
+                                    <td class="dayColumn" id="G6" href="#" onclick="getBackground(this, 41)"></td>
+                                  </tr>
+                                  <tr>
+                                    <td class="firstColumn" href="#" onclick="getBackground(A7, 42); getBackground(B7, 43); getBackground(C7, 44); getBackground(D7, 45); getBackground(E7, 46); getBackground(F7, 47); getBackground(G7, 48);">1pm - 2pm</td>
+                                    <td class="dayColumn" id="A7" href="#" onclick="getBackground(this, 42)"></td>
+                                    <td class="dayColumn" id="B7" href="#" onclick="getBackground(this, 43)"></td>
+                                    <td class="dayColumn" id="C7" href="#" onclick="getBackground(this, 44)"></td>
+                                    <td class="dayColumn" id="D7" href="#" onclick="getBackground(this, 45)"></td>
+                                    <td class="dayColumn" id="E7" href="#" onclick="getBackground(this, 46)"></td>
+                                    <td class="dayColumn" id="F7" href="#" onclick="getBackground(this, 47)"></td>
+                                    <td class="dayColumn" id="G7" href="#" onclick="getBackground(this, 48)"></td>
+                                  </tr>
+                                  <tr>
+                                    <td class="firstColumn" href="#" onclick="getBackground(A8, 49); getBackground(B8, 50); getBackground(C8, 51); getBackground(D8, 52); getBackground(E8, 53); getBackground(F8, 54); getBackground(G8, 55);">2pm - 3pm</td>
+                                    <td class="dayColumn" id="A8" href="#" onclick="getBackground(this, 49)"></td>
+                                    <td class="dayColumn" id="B8" href="#" onclick="getBackground(this, 50)"></td>
+                                    <td class="dayColumn" id="C8" href="#" onclick="getBackground(this, 51)"></td>
+                                    <td class="dayColumn" id="D8" href="#" onclick="getBackground(this, 52)"></td>
+                                    <td class="dayColumn" id="E8" href="#" onclick="getBackground(this, 53)"></td>
+                                    <td class="dayColumn" id="F8" href="#" onclick="getBackground(this, 54)"></td>
+                                    <td class="dayColumn" id="G8" href="#" onclick="getBackground(this, 55)"></td>
+                                  </tr>
+                                  <tr>
+                                    <td class="firstColumn" href="#" onclick="getBackground(A9, 56); getBackground(B9, 57); getBackground(C9, 58); getBackground(D9, 59); getBackground(E9, 60); getBackground(F9, 61); getBackground(G9, 62);">3pm - 4pm</td>
+                                    <td class="dayColumn" id="A9" href="#" onclick="getBackground(this, 56)"></td>
+                                    <td class="dayColumn" id="B9" href="#" onclick="getBackground(this, 57)"></td>
+                                    <td class="dayColumn" id="C9" href="#" onclick="getBackground(this, 58)"></td>
+                                    <td class="dayColumn" id="D9" href="#" onclick="getBackground(this, 59)"></td>
+                                    <td class="dayColumn" id="E9" href="#" onclick="getBackground(this, 60)"></td>
+                                    <td class="dayColumn" id="F9" href="#" onclick="getBackground(this, 61)"></td>
+                                    <td class="dayColumn" id="G9" href="#" onclick="getBackground(this, 62)"></td>
+                                  </tr>
+                                  <tr>
+                                    <td class="firstColumn" href="#" onclick="getBackground(A10, 63); getBackground(B10, 64); getBackground(C10, 65); getBackground(D10, 66); getBackground(E10, 67); getBackground(F10, 68); getBackground(G10, 69);">4pm - 5pm</td>
+                                    <td class="dayColumn" id="A10" href="#" onclick="getBackground(this, 63)"></td>
+                                    <td class="dayColumn" id="B10" href="#" onclick="getBackground(this, 64)"></td>
+                                    <td class="dayColumn" id="C10" href="#" onclick="getBackground(this, 65)"></td>
+                                    <td class="dayColumn" id="D10" href="#" onclick="getBackground(this, 66)"></td>
+                                    <td class="dayColumn" id="E10" href="#" onclick="getBackground(this, 67)"></td>
+                                    <td class="dayColumn" id="F10" href="#" onclick="getBackground(this, 68)"></td>
+                                    <td class="dayColumn" id="G10" href="#" onclick="getBackground(this, 69)"></td>
+                                  </tr>
+                                  <tr>
+                                    <td class="firstColumn" href="#" onclick="getBackground(A11, 70); getBackground(B11, 71); getBackground(C11, 72); getBackground(D11, 73); getBackground(E11, 74); getBackground(F11, 75); getBackground(G11, 76);">5pm - 6pm</td>
+                                    <td class="dayColumn" id="A11" href="#" onclick="getBackground(this, 70)"></td>
+                                    <td class="dayColumn" id="B11" href="#" onclick="getBackground(this, 71)"></td>
+                                    <td class="dayColumn" id="C11" href="#" onclick="getBackground(this, 72)"></td>
+                                    <td class="dayColumn" id="D11" href="#" onclick="getBackground(this, 73)"></td>
+                                    <td class="dayColumn" id="E11" href="#" onclick="getBackground(this, 74)"></td>
+                                    <td class="dayColumn" id="F11" href="#" onclick="getBackground(this, 75)"></td>
+                                    <td class="dayColumn" id="G11" href="#" onclick="getBackground(this, 76)"></td>
+                                  </tr>
+                                  <tr>
+                                    <td class="firstColumn" href="#" onclick="getBackground(A12, 77); getBackground(B12, 78); getBackground(C12, 79); getBackground(D12, 80); getBackground(E12, 81); getBackground(F12, 82); getBackground(G12, 83);">6pm - 7pm</td>
+                                    <td class="dayColumn" id="A12" href="#" onclick="getBackground(this, 77)"></td>
+                                    <td class="dayColumn" id="B12" href="#" onclick="getBackground(this, 78)"></td>
+                                    <td class="dayColumn" id="C12" href="#" onclick="getBackground(this, 79)"></td>
+                                    <td class="dayColumn" id="D12" href="#" onclick="getBackground(this, 80)"></td>
+                                    <td class="dayColumn" id="E12" href="#" onclick="getBackground(this, 81)"></td>
+                                    <td class="dayColumn" id="F12" href="#" onclick="getBackground(this, 82)"></td>
+                                    <td class="dayColumn" id="G12" href="#" onclick="getBackground(this, 83)"></td>
+                                  </tr>
+                                  <tr>
+                                    <td class="firstColumn" href="#" onclick="getBackground(A13, 84); getBackground(B13, 85); getBackground(C13, 86); getBackground(D13, 87); getBackground(E13, 88); getBackground(F13, 89); getBackground(G13, 90);">7pm - 8pm</td>
+                                    <td class="dayColumn" id="A13" href="#" onclick="getBackground(this, 84)"></td>
+                                    <td class="dayColumn" id="B13" href="#" onclick="getBackground(this, 85)"></td>
+                                    <td class="dayColumn" id="C13" href="#" onclick="getBackground(this, 86)"></td>
+                                    <td class="dayColumn" id="D13" href="#" onclick="getBackground(this, 87)"></td>
+                                    <td class="dayColumn" id="E13" href="#" onclick="getBackground(this, 88)"></td>
+                                    <td class="dayColumn" id="F13" href="#" onclick="getBackground(this, 89)"></td>
+                                    <td class="dayColumn" id="G13" href="#" onclick="getBackground(this, 90)"></td>
+                                  </tr>
+                                  <tr>
+                                    <td class="firstColumn" href="#" onclick="getBackground(A14, 91); getBackground(B14, 92); getBackground(C14, 93); getBackground(D14, 94); getBackground(E14, 95); getBackground(F14, 96); getBackground(G14, 97);">8pm - 9pm</td>
+                                    <td class="dayColumn" id="A14" href="#" onclick="getBackground(this, 91)"></td>
+                                    <td class="dayColumn" id="B14" href="#" onclick="getBackground(this, 92)"></td>
+                                    <td class="dayColumn" id="C14" href="#" onclick="getBackground(this, 93)"></td>
+                                    <td class="dayColumn" id="D14" href="#" onclick="getBackground(this, 94)"></td>
+                                    <td class="dayColumn" id="E14" href="#" onclick="getBackground(this, 95)"></td>
+                                    <td class="dayColumn" id="F14" href="#" onclick="getBackground(this, 96)"></td>
+                                    <td class="dayColumn" id="G14" href="#" onclick="getBackground(this, 97)"></td>
+                                  </tr>
+                                  <tr>
+                                    <td class="firstColumn" href="#" onclick="getBackground(A15, 98); getBackground(B15, 99); getBackground(C15, 100); getBackground(D15, 101); getBackground(E15, 102); getBackground(F15, 103); getBackground(G15, 104);">9pm - 10pm</td>
+                                    <td class="dayColumn" id="A15" href="#" onclick="getBackground(this, 98)"></td>
+                                    <td class="dayColumn" id="B15" href="#" onclick="getBackground(this, 99)"></td>
+                                    <td class="dayColumn" id="C15" href="#" onclick="getBackground(this, 100)"></td>
+                                    <td class="dayColumn" id="D15" href="#" onclick="getBackground(this, 101)"></td>
+                                    <td class="dayColumn" id="E15" href="#" onclick="getBackground(this, 102)"></td>
+                                    <td class="dayColumn" id="F15" href="#" onclick="getBackground(this, 103)"></td>
+                                    <td class="dayColumn" id="G15" href="#" onclick="getBackground(this, 104)"></td>
+                                  </tr>
+                                  <tr>
+                                    <td class="firstColumn" href="#" onclick="getBackground(A16, 105); getBackground(B16, 106); getBackground(C16, 107); getBackground(D16, 108); getBackground(E16, 109); getBackground(F16, 110); getBackground(G16, 111);">10pm - 11pm</td>
+                                    <td class="dayColumn" id="A16" href="#" onclick="getBackground(this, 105)"></td>
+                                    <td class="dayColumn" id="B16" href="#" onclick="getBackground(this, 106)"></td>
+                                    <td class="dayColumn" id="C16" href="#" onclick="getBackground(this, 107)"></td>
+                                    <td class="dayColumn" id="D16" href="#" onclick="getBackground(this, 108)"></td>
+                                    <td class="dayColumn" id="E16" href="#" onclick="getBackground(this, 109)"></td>
+                                    <td class="dayColumn" id="F16" href="#" onclick="getBackground(this, 110)"></td>
+                                    <td class="dayColumn" id="G16" href="#" onclick="getBackground(this, 111)"></td>
+                                  </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    </div>
+                      <div style="text-align:center">
+                        <input type="submit" class="btn btn-primary btn-xlg" value="Submit">
+                      </div>
+                    </div>
+                  </div>
+                </form>
+            <div class="push"></div>
+        </div> <!--End of container-->
+    </div>  <!--End of wrapper-->
+    <div class="container-fluid">
+        <div class="row footer">Contact Kenny Anderson at 828-761-1769 for more info if needed</div>
+    </div>    
+</body>
+</html>
