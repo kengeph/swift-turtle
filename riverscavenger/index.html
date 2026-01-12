@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chattanooga Riverwalk Scavenger Hunt</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 30px;
+            border-radius: 15px;
+            margin: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .scavenger-list {
+            padding: 20px;
+        }
+
+        .item {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .item.found {
+            background: #d4edda;
+            border-color: #4CAF50;
+        }
+
+        .item-checkbox {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #667eea;
+            border-radius: 50%;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .item.found .item-checkbox {
+            background: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .item-checkbox::after {
+            content: '✓';
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .item.found .item-checkbox::after {
+            opacity: 1;
+        }
+
+        .item-text {
+            flex: 1;
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+
+        .item.found .item-text {
+            text-decoration: line-through;
+            color: #6c757d;
+        }
+
+        .emoji {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        .celebration {
+            text-align: center;
+            padding: 30px 20px;
+            display: none;
+        }
+
+        .celebration.show {
+            display: block;
+            animation: bounce 0.5s ease;
+        }
+
+        .celebration h2 {
+            color: #4CAF50;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .celebration p {
+            font-size: 1.2em;
+            color: #666;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+            
+            .item-text {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌊 Riverwalk Scavenger Hunt 🌊</h1>
+            <p>Find all the items below as you explore!</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill">0%</div>
+        </div>
+
+        <div class="scavenger-list" id="scavengerList">
+            <div class="item" data-item="bridge">
+                <div class="item-checkbox"></div>
+                <div class="item-text"><span class="emoji">🌉</span> A bridge over the river</div>
+            </div>
+            <div class="item" data-item="duck">
+                <div class="item-checkbox"></div>
+                <div class="item-text"><span class="emoji">🦆</span> A duck or bird in the water</div>
+            </div>
+            <div class="item" data-item="bench">
+                <div class="item-checkbox"></div>
+                <div class="item-text"><span class="emoji">🪑</span> A bench to sit on</div>
+            </div>
+            <div class="item" data-item="tree">
+                <div class="item-checkbox"></div>
+                <div class="item-text"><span class="emoji">🌳</span> A big tree</div>
+            </div>
+            <div class="item" data-item="flower">
+                <div class="item-checkbox"></div>
+                <div class="item-text"><span class="emoji">🌸</span> A pretty flower</div>
+            </div>
+            <div class="item" data-item="sign">
+                <div class="item-checkbox"></div>
+                <div class="item-text"><span class="emoji">📋</span> An information sign</div>
+            </div>
+            <div class="item" data-item="boat">
+                <div class="item-checkbox"></div>
+                <div class="item-text"><span class="emoji">⛵</span> A boat on the river</div>
+            </div>
+            <div class="item" data-item="rock">
+                <div class="item-checkbox"></div>
+                <div class="item-text"><span class="emoji">🪨</span> A cool rock or stone</div>
+            </div>
+            <div class="item" data-item="fish">
+                <div class="item-checkbox"></div>
+                <div class="item-text"><span class="emoji">🐟</span> Something swimming in the water</div>
+            </div>
+            <div class="item" data-item="statue">
+                <div class="item-checkbox"></div>
+                <div class="item-text"><span class="emoji">🗿</span> A statue or sculpture</div>
+            </div>
+            <div class="item" data-item="bike">
+                <div class="item-checkbox"></div>
+                <div class="item-text"><span class="emoji">🚲</span> Someone riding a bike</div>
+            </div>
+            <div class="item" data-item="cloud">
+                <div class="item-checkbox"></div>
+                <div class="item-text"><span class="emoji">☁️</span> A cloud that looks like something</div>
+            </div>
+            <div class="item" data-item="trash">
+                <div class="item-checkbox"></div>
+                <div class="item-text"><span class="emoji">🗑️</span> A trash can (good job finding it!)</div>
+            </div>
+            <div class="item" data-item="path">
+                <div class="item-checkbox"></div>
+                <div class="item-text"><span class="emoji">🛤️</span> A path marker or mile marker</div>
+            </div>
+            <div class="item" data-item="picnic">
+                <div class="item-checkbox"></div>
+                <div class="item-text"><span class="emoji">🧺</span> A picnic area or table</div>
+            </div>
+        </div>
+
+        <div class="celebration" id="celebration">
+            <h2>🎉 Awesome Job! 🎉</h2>
+            <p>You found everything! You're a super scavenger hunter!</p>
+        </div>
+
+        <div class="footer">
+            <p>Have fun exploring the Chattanooga Riverwalk! 💙</p>
+        </div>
+    </div>
+
+    <script>
+        const items = document.querySelectorAll('.item');
+        const progressFill = document.getElementById('progressFill');
+        const celebration = document.getElementById('celebration');
+        const totalItems = items.length;
+
+        // Load saved progress from localStorage
+        function loadProgress() {
+            const savedItems = JSON.parse(localStorage.getItem('scavengerItems') || '{}');
+            let foundCount = 0;
+
+            items.forEach(item => {
+                const itemId = item.dataset.item;
+                if (savedItems[itemId]) {
+                    item.classList.add('found');
+                    foundCount++;
+                }
+            });
+
+            updateProgress(foundCount);
+        }
+
+        // Save progress to localStorage
+        function saveProgress() {
+            const savedItems = {};
+            items.forEach(item => {
+                if (item.classList.contains('found')) {
+                    savedItems[item.dataset.item] = true;
+                }
+            });
+            localStorage.setItem('scavengerItems', JSON.stringify(savedItems));
+        }
+
+        // Update progress bar
+        function updateProgress(foundCount) {
+            const percentage = Math.round((foundCount / totalItems) * 100);
+            progressFill.style.width = percentage + '%';
+            progressFill.textContent = foundCount + ' / ' + totalItems + ' (' + percentage + '%)';
+
+            if (foundCount === totalItems) {
+                celebration.classList.add('show');
+            } else {
+                celebration.classList.remove('show');
+            }
+        }
+
+        // Add click handlers
+        items.forEach(item => {
+            item.addEventListener('click', () => {
+                item.classList.toggle('found');
+                const foundCount = document.querySelectorAll('.item.found').length;
+                updateProgress(foundCount);
+                saveProgress();
+            });
+        });
+
+        // Initialize
+        loadProgress();
+    </script>
+</body>
+</html>
