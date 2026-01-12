@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Photo Scavenger Hunt - Hamilton Place</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+    <script src="firebase-config.js"></script>
     <style>
         * {
             margin: 0;
@@ -44,6 +48,19 @@
         .header p {
             font-size: 1.1em;
             opacity: 0.95;
+        }
+
+        .storage-status {
+            font-size: 0.85em;
+            margin-top: 10px;
+            padding: 5px 10px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 15px;
+            display: inline-block;
+        }
+
+        .storage-status.cloud {
+            background: rgba(76, 175, 80, 0.3);
         }
 
         .timer-section {
@@ -372,6 +389,7 @@
         <div class="header">
             <h1>📸 Photo Scavenger Hunt 📸</h1>
             <p>Hamilton Place Area - Chattanooga, TN</p>
+            <div class="storage-status" id="storageStatus">💾 Local Storage</div>
         </div>
 
         <div class="timer-section">
@@ -442,9 +460,33 @@
         let selectedTeam = 'mom';
         let endTime = null;
         let countdownInterval = null;
+        let firebaseStorage = null;
+        let useFirebase = false;
+
+        // Initialize Firebase if configured
+        function initFirebase() {
+            if (typeof firebaseConfig !== 'undefined' && USE_FIREBASE && firebaseConfig.apiKey !== 'YOUR_API_KEY_HERE') {
+                try {
+                    firebase.initializeApp(firebaseConfig);
+                    firebaseStorage = firebase.storage();
+                    useFirebase = true;
+                    document.getElementById('storageStatus').textContent = '☁️ Cloud Storage (Firebase)';
+                    document.getElementById('storageStatus').classList.add('cloud');
+                    console.log('Firebase Storage initialized');
+                } catch (error) {
+                    console.error('Firebase initialization error:', error);
+                    useFirebase = false;
+                    document.getElementById('storageStatus').textContent = '💾 Local Storage (Firebase Error)';
+                }
+            } else {
+                console.log('Using localStorage for photo storage');
+                document.getElementById('storageStatus').textContent = '💾 Local Storage';
+            }
+        }
 
         // Initialize
         function init() {
+            initFirebase();
             loadData();
             renderItems();
             checkHuntStatus();
@@ -575,30 +617,79 @@
         }
 
         // Upload photo
-        function uploadPhoto(itemId, input) {
+        async function uploadPhoto(itemId, input) {
             const file = input.files[0];
             if (!file) return;
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const photo = {
-                    id: Date.now().toString(),
-                    itemId: itemId,
-                    team: selectedTeam,
-                    data: e.target.result,
-                    timestamp: new Date().toISOString()
-                };
+            const photoId = Date.now().toString();
+            const timestamp = new Date().toISOString();
 
-                const photos = getPhotos();
-                photos.push(photo);
-                savePhotos(photos);
-                
-                // Re-render items
-                document.getElementById('scavengerList').innerHTML = '<h2>Find & Photograph:</h2>';
-                renderItems();
-                updateScores();
-            };
-            reader.readAsDataURL(file);
+            if (useFirebase && firebaseStorage) {
+                // Upload to Firebase Storage
+                try {
+                    const storageRef = firebaseStorage.ref();
+                    const photoRef = storageRef.child(`photos/${photoId}_${file.name}`);
+                    
+                    // Show upload progress
+                    const uploadBtn = input.nextElementSibling;
+                    const originalText = uploadBtn.textContent;
+                    uploadBtn.textContent = '⏳ Uploading...';
+                    uploadBtn.disabled = true;
+
+                    const snapshot = await photoRef.put(file);
+                    const downloadURL = await snapshot.ref.getDownloadURL();
+
+                    const photo = {
+                        id: photoId,
+                        itemId: itemId,
+                        team: selectedTeam,
+                        url: downloadURL, // Store URL instead of base64
+                        data: downloadURL, // For compatibility
+                        timestamp: timestamp,
+                        filename: file.name
+                    };
+
+                    const photos = getPhotos();
+                    photos.push(photo);
+                    savePhotos(photos);
+                    
+                    uploadBtn.textContent = originalText;
+                    uploadBtn.disabled = false;
+                    
+                    // Re-render items
+                    document.getElementById('scavengerList').innerHTML = '<h2>Find & Photograph:</h2>';
+                    renderItems();
+                    updateScores();
+                } catch (error) {
+                    console.error('Upload error:', error);
+                    alert('Failed to upload photo. Please try again.');
+                    const uploadBtn = input.nextElementSibling;
+                    uploadBtn.textContent = '📷 Add Photo';
+                    uploadBtn.disabled = false;
+                }
+            } else {
+                // Fallback to localStorage
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const photo = {
+                        id: photoId,
+                        itemId: itemId,
+                        team: selectedTeam,
+                        data: e.target.result,
+                        timestamp: timestamp
+                    };
+
+                    const photos = getPhotos();
+                    photos.push(photo);
+                    savePhotos(photos);
+                    
+                    // Re-render items
+                    document.getElementById('scavengerList').innerHTML = '<h2>Find & Photograph:</h2>';
+                    renderItems();
+                    updateScores();
+                };
+                reader.readAsDataURL(file);
+            }
         }
 
         // Get photos
