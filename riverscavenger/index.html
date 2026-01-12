@@ -62,6 +62,23 @@
             margin: 20px;
             overflow: hidden;
             position: relative;
+            display: none;
+        }
+
+        .progress-bar.show {
+            display: block;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            font-size: 0.9em;
+            color: #666;
+            z-index: 1;
+            pointer-events: none;
         }
 
         .progress-fill {
@@ -75,6 +92,8 @@
             color: white;
             font-weight: bold;
             font-size: 0.9em;
+            position: relative;
+            z-index: 2;
         }
 
         .scavenger-list {
@@ -204,12 +223,13 @@
     <div class="container">
         <div class="header">
             <img src="img/riverwalk-logo.png" alt="Chattanooga Riverwalk Logo" class="logo">
-            <h1>🌊 Riverwalk Scavenger Hunt 🌊</h1>
+            <h1>Riverwalk Scavenger Hunt</h1>
             <p>Find all the items below as you explore!</p>
         </div>
 
-        <div class="progress-bar">
-            <div class="progress-fill" id="progressFill">0%</div>
+        <div class="progress-bar" id="progressBar">
+            <div class="progress-text" id="progressText"></div>
+            <div class="progress-fill" id="progressFill"></div>
         </div>
 
         <div class="scavenger-list" id="scavengerList">
@@ -291,7 +311,9 @@
 
     <script>
         const items = document.querySelectorAll('.item');
+        const progressBar = document.getElementById('progressBar');
         const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
         const celebration = document.getElementById('celebration');
         const totalItems = items.length;
 
@@ -324,9 +346,25 @@
 
         // Update progress bar
         function updateProgress(foundCount) {
+            if (foundCount === 0) {
+                progressBar.classList.remove('show');
+                return;
+            }
+
+            progressBar.classList.add('show');
             const percentage = Math.round((foundCount / totalItems) * 100);
+            const progressDetails = foundCount + ' / ' + totalItems + ' (' + percentage + '%)';
+            
             progressFill.style.width = percentage + '%';
-            progressFill.textContent = foundCount + ' / ' + totalItems + ' (' + percentage + '%)';
+            
+            // Show text in gray area if less than 5 items found, otherwise in green fill
+            if (foundCount < 5) {
+                progressText.textContent = progressDetails;
+                progressFill.textContent = '';
+            } else {
+                progressText.textContent = '';
+                progressFill.textContent = progressDetails;
+            }
 
             if (foundCount === totalItems) {
                 celebration.classList.add('show');
