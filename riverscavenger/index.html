@@ -35,6 +35,15 @@
             text-align: center;
         }
 
+        .logo {
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 15px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
         .header h1 {
             font-size: 2em;
             margin-bottom: 10px;
@@ -177,6 +186,10 @@
         }
 
         @media (max-width: 600px) {
+            .logo {
+                max-width: 150px;
+            }
+            
             .header h1 {
                 font-size: 1.5em;
             }
@@ -190,6 +203,7 @@
 <body>
     <div class="container">
         <div class="header">
+            <img src="img/riverwalk-logo.png" alt="Chattanooga Riverwalk Logo" class="logo">
             <h1>🌊 Riverwalk Scavenger Hunt 🌊</h1>
             <p>Find all the items below as you explore!</p>
         </div>
