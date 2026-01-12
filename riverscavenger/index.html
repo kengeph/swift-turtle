@@ -215,6 +215,17 @@
             background: #f44336;
             top: -10px;
             animation: confetti-fall linear forwards;
+            border-radius: 2px;
+        }
+
+        .confetti.large {
+            width: 15px;
+            height: 15px;
+        }
+
+        .confetti.small {
+            width: 8px;
+            height: 8px;
         }
 
         .confetti:nth-child(1) { left: 10%; background: #f44336; animation-duration: 3s; }
@@ -403,19 +414,30 @@
             const confettiContainer = document.getElementById('confettiContainer');
             confettiContainer.innerHTML = '';
             
-            for (let i = 0; i < 20; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.left = Math.random() * 100 + '%';
-                confetti.style.animationDelay = Math.random() * 0.5 + 's';
-                confetti.style.animationDuration = (Math.random() * 1 + 2.5) + 's';
-                confettiContainer.appendChild(confetti);
+            const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#00bcd4', '#4caf50', '#8bc34a', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
+            const sizes = ['', 'large', 'small'];
+            
+            // Create multiple waves of confetti
+            for (let wave = 0; wave < 3; wave++) {
+                setTimeout(() => {
+                    for (let i = 0; i < 50; i++) {
+                        const confetti = document.createElement('div');
+                        const sizeClass = sizes[Math.floor(Math.random() * sizes.length)];
+                        confetti.className = 'confetti ' + sizeClass;
+                        confetti.style.left = Math.random() * 100 + '%';
+                        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                        confetti.style.animationDelay = (Math.random() * 0.5) + 's';
+                        confetti.style.animationDuration = (Math.random() * 1.5 + 2.5) + 's';
+                        confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                        confettiContainer.appendChild(confetti);
+                    }
+                }, wave * 300);
             }
             
             // Remove confetti after animation completes
             setTimeout(() => {
                 confettiContainer.innerHTML = '';
-            }, 4000);
+            }, 6000);
         }
 
         // Update progress bar
