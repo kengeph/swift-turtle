@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Scavenger Hunt - Hamilton Place</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .timer-section {
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .time-input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .time-input-group input {
+            padding: 10px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .countdown {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+
+        .countdown.show {
+            display: block;
+        }
+
+        .countdown-display {
+            font-size: 3em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 10px 0;
+        }
+
+        .countdown-label {
+            font-size: 1.2em;
+            color: #666;
+        }
+
+        .hunt-ended {
+            text-align: center;
+            padding: 20px;
+            background: #d4edda;
+            border: 2px solid #4CAF50;
+            border-radius: 10px;
+            margin: 20px;
+            display: none;
+        }
+
+        .hunt-ended.show {
+            display: block;
+        }
+
+        .hunt-ended h2 {
+            color: #4CAF50;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .scavenger-list {
+            padding: 20px;
+        }
+
+        .scavenger-list h2 {
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .item {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .item-info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .item-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .item-description {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .item-photos {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .photo-preview {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 2px solid #667eea;
+        }
+
+        .upload-btn {
+            padding: 8px 15px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .upload-btn:hover {
+            background: #45a049;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .team-selector {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .team-btn {
+            padding: 8px 15px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .team-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .team-btn.mom {
+            border-color: #e91e63;
+        }
+
+        .team-btn.mom.active {
+            background: #e91e63;
+            border-color: #e91e63;
+        }
+
+        .team-btn.dad {
+            border-color: #2196f3;
+        }
+
+        .team-btn.dad.active {
+            background: #2196f3;
+            border-color: #2196f3;
+        }
+
+        .scores-section {
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 2px solid #e0e0e0;
+            display: none;
+        }
+
+        .scores-section.show {
+            display: block;
+        }
+
+        .scores-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .team-score {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            min-width: 200px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .team-score.mom {
+            border: 3px solid #e91e63;
+        }
+
+        .team-score.dad {
+            border: 3px solid #2196f3;
+        }
+
+        .team-score h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .team-score.mom h3 {
+            color: #e91e63;
+        }
+
+        .team-score.dad h3 {
+            color: #2196f3;
+        }
+
+        .score-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .photos-gallery {
+            padding: 20px;
+            display: none;
+        }
+
+        .photos-gallery.show {
+            display: block;
+        }
+
+        .photos-gallery h2 {
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        .photo-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .photo-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .photo-item-title {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .photo-item-team {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .photo-item-team.mom {
+            background: #e91e63;
+            color: white;
+        }
+
+        .photo-item-team.dad {
+            background: #2196f3;
+            color: white;
+        }
+
+        .photo-item-image {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 8px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+            
+            .countdown-display {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📸 Photo Scavenger Hunt 📸</h1>
+            <p>Hamilton Place Area - Chattanooga, TN</p>
+        </div>
+
+        <div class="timer-section">
+            <div class="time-input-group" id="timeInputGroup">
+                <label for="endTime">Hunt Ends At:</label>
+                <input type="datetime-local" id="endTime" />
+                <button class="btn" onclick="setEndTime()">Start Hunt</button>
+            </div>
+            <div class="countdown" id="countdown">
+                <div class="countdown-label">Time Remaining:</div>
+                <div class="countdown-display" id="countdownDisplay">00:00:00</div>
+                <button class="btn btn-secondary" onclick="showTimeAdjust()">Adjust Time</button>
+            </div>
+        </div>
+
+        <div class="hunt-ended" id="huntEnded">
+            <h2>🎉 Hunt is Over! 🎉</h2>
+            <p>Time to see the results!</p>
+        </div>
+
+        <div class="scavenger-list" id="scavengerList">
+            <h2>Find & Photograph:</h2>
+            <!-- Items will be populated by JavaScript -->
+        </div>
+
+        <div class="scores-section" id="scoresSection">
+            <h2 style="text-align: center; margin-bottom: 20px; color: #667eea;">Final Scores</h2>
+            <div class="scores-container">
+                <div class="team-score mom">
+                    <h3>👩 Mom Team</h3>
+                    <div class="score-number" id="momScore">0</div>
+                    <div>photos</div>
+                </div>
+                <div class="team-score dad">
+                    <h3>👨 Dad Team</h3>
+                    <div class="score-number" id="dadScore">0</div>
+                    <div>photos</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="photos-gallery" id="photosGallery">
+            <h2>All Photos</h2>
+            <!-- Photos will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        const items = [
+            { id: 'mall-sign', title: 'Hamilton Place Mall Sign', description: 'The main mall entrance sign' },
+            { id: 'food-court', title: 'Food Court', description: 'Any food court area or sign' },
+            { id: 'parking-lot', title: 'Parking Lot Feature', description: 'A unique parking lot feature or sign' },
+            { id: 'store-window', title: 'Store Window Display', description: 'An interesting store window display' },
+            { id: 'restaurant-sign', title: 'Restaurant Sign', description: 'A restaurant sign near the mall' },
+            { id: 'street-sign', title: 'Street Sign', description: 'A street sign with "Hamilton" in the name' },
+            { id: 'fountain', title: 'Fountain or Water Feature', description: 'Any fountain or water feature' },
+            { id: 'bench', title: 'Decorative Bench', description: 'A bench or seating area' },
+            { id: 'tree', title: 'Unique Tree', description: 'An interesting or large tree' },
+            { id: 'statue', title: 'Statue or Sculpture', description: 'Any statue or art sculpture' },
+            { id: 'flag', title: 'American Flag', description: 'An American flag flying' },
+            { id: 'signage', title: 'Directional Sign', description: 'A directional or wayfinding sign' },
+            { id: 'lighting', title: 'Decorative Lighting', description: 'Decorative lights or lamp posts' },
+            { id: 'landscaping', title: 'Landscaping Feature', description: 'Interesting landscaping or garden area' },
+            { id: 'vehicle', title: 'Unique Vehicle', description: 'An interesting or unique vehicle in parking lot' },
+            { id: 'entrance', title: 'Store Entrance', description: 'An interesting store entrance or door' }
+        ];
+
+        let selectedTeam = 'mom';
+        let endTime = null;
+        let countdownInterval = null;
+
+        // Initialize
+        function init() {
+            loadData();
+            renderItems();
+            checkHuntStatus();
+        }
+
+        // Load saved data
+        function loadData() {
+            const savedEndTime = localStorage.getItem('huntEndTime');
+            if (savedEndTime) {
+                endTime = new Date(savedEndTime);
+                if (endTime > new Date()) {
+                    startCountdown();
+                } else {
+                    showHuntEnded();
+                }
+            }
+        }
+
+        // Set end time
+        function setEndTime() {
+            const input = document.getElementById('endTime');
+            const timeValue = input.value;
+            
+            if (!timeValue) {
+                alert('Please select an end time!');
+                return;
+            }
+
+            endTime = new Date(timeValue);
+            localStorage.setItem('huntEndTime', endTime.toISOString());
+            
+            document.getElementById('timeInputGroup').style.display = 'none';
+            startCountdown();
+        }
+
+        // Show time adjust
+        function showTimeAdjust() {
+            document.getElementById('timeInputGroup').style.display = 'flex';
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+        }
+
+        // Start countdown
+        function startCountdown() {
+            document.getElementById('countdown').classList.add('show');
+            updateCountdown();
+            countdownInterval = setInterval(updateCountdown, 1000);
+        }
+
+        // Update countdown
+        function updateCountdown() {
+            if (!endTime) return;
+
+            const now = new Date();
+            const diff = endTime - now;
+
+            if (diff <= 0) {
+                clearInterval(countdownInterval);
+                showHuntEnded();
+                return;
+            }
+
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            const display = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            document.getElementById('countdownDisplay').textContent = display;
+        }
+
+        // Show hunt ended
+        function showHuntEnded() {
+            document.getElementById('huntEnded').classList.add('show');
+            document.getElementById('countdown').classList.remove('show');
+            document.getElementById('scoresSection').classList.add('show');
+            document.getElementById('photosGallery').classList.add('show');
+            updateScores();
+            renderGallery();
+        }
+
+        // Check hunt status
+        function checkHuntStatus() {
+            if (endTime && endTime <= new Date()) {
+                showHuntEnded();
+            }
+        }
+
+        // Render items
+        function renderItems() {
+            const container = document.getElementById('scavengerList');
+            items.forEach(item => {
+                const photos = getPhotosForItem(item.id);
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'item';
+                itemDiv.innerHTML = `
+                    <div class="item-info">
+                        <div class="item-title">${item.title}</div>
+                        <div class="item-description">${item.description}</div>
+                    </div>
+                    <div class="item-photos">
+                        ${photos.map(photo => `
+                            <img src="${photo.data}" alt="Photo" class="photo-preview" onclick="viewPhoto('${item.id}', '${photo.id}')" />
+                        `).join('')}
+                        ${endTime && endTime > new Date() ? `
+                            <div>
+                                <div class="team-selector">
+                                    <button class="team-btn mom ${selectedTeam === 'mom' ? 'active' : ''}" onclick="selectTeam('mom')">👩 Mom</button>
+                                    <button class="team-btn dad ${selectedTeam === 'dad' ? 'active' : ''}" onclick="selectTeam('dad')">👨 Dad</button>
+                                </div>
+                                <input type="file" accept="image/*" class="file-input" id="file-${item.id}" onchange="uploadPhoto('${item.id}', this)" />
+                                <button class="upload-btn" onclick="document.getElementById('file-${item.id}').click()">📷 Add Photo</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+                container.appendChild(itemDiv);
+            });
+        }
+
+        // Select team
+        function selectTeam(team) {
+            selectedTeam = team;
+            document.querySelectorAll('.team-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Upload photo
+        function uploadPhoto(itemId, input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const photo = {
+                    id: Date.now().toString(),
+                    itemId: itemId,
+                    team: selectedTeam,
+                    data: e.target.result,
+                    timestamp: new Date().toISOString()
+                };
+
+                const photos = getPhotos();
+                photos.push(photo);
+                savePhotos(photos);
+                
+                // Re-render items
+                document.getElementById('scavengerList').innerHTML = '<h2>Find & Photograph:</h2>';
+                renderItems();
+                updateScores();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Get photos
+        function getPhotos() {
+            const saved = localStorage.getItem('huntPhotos');
+            return saved ? JSON.parse(saved) : [];
+        }
+
+        // Save photos
+        function savePhotos(photos) {
+            localStorage.setItem('huntPhotos', JSON.stringify(photos));
+        }
+
+        // Get photos for item
+        function getPhotosForItem(itemId) {
+            return getPhotos().filter(p => p.itemId === itemId);
+        }
+
+        // Update scores
+        function updateScores() {
+            const photos = getPhotos();
+            const momCount = photos.filter(p => p.team === 'mom').length;
+            const dadCount = photos.filter(p => p.team === 'dad').length;
+            
+            document.getElementById('momScore').textContent = momCount;
+            document.getElementById('dadScore').textContent = dadCount;
+        }
+
+        // Render gallery
+        function renderGallery() {
+            const container = document.getElementById('photosGallery');
+            const photos = getPhotos();
+            
+            if (photos.length === 0) {
+                container.innerHTML = '<h2>All Photos</h2><p>No photos uploaded yet.</p>';
+                return;
+            }
+
+            let html = '<h2>All Photos</h2>';
+            
+            items.forEach(item => {
+                const itemPhotos = photos.filter(p => p.itemId === item.id);
+                if (itemPhotos.length > 0) {
+                    itemPhotos.forEach(photo => {
+                        html += `
+                            <div class="photo-item">
+                                <div class="photo-item-header">
+                                    <div class="photo-item-title">${item.title}</div>
+                                    <div class="photo-item-team ${photo.team}">${photo.team === 'mom' ? '👩 Mom Team' : '👨 Dad Team'}</div>
+                                </div>
+                                <img src="${photo.data}" alt="${item.title}" class="photo-item-image" />
+                            </div>
+                        `;
+                    });
+                }
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // View photo (placeholder for future modal)
+        function viewPhoto(itemId, photoId) {
+            // Could add a modal here to view full-size photo
+            console.log('View photo:', itemId, photoId);
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
