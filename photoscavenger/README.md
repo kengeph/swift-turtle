@@ -2,6 +2,17 @@
 
 This app supports cloud storage using Firebase Storage. Follow these steps to enable cloud photo storage:
 
+## ⚠️ Security Note
+
+**The `firebase-config.js` file is gitignored and should NOT be committed to the repository.** This file contains your Firebase API keys. While Firebase API keys are designed to be public (they're used in client-side code), you should still:
+
+1. Keep `firebase-config.js` in `.gitignore` (already done)
+2. Use the template file (`firebase-config.template.js`) as a reference
+3. Secure your Firebase Storage rules to prevent unauthorized access
+4. Never commit your actual `firebase-config.js` file
+
+The template file (`firebase-config.template.js`) is safe to commit and serves as documentation.
+
 ## Firebase Setup (Recommended)
 
 ### Step 1: Create a Firebase Project

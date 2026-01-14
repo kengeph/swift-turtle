@@ -21,6 +21,15 @@
             min-height: 100vh;
             padding: 20px;
             color: #333;
+            transition: background 0.5s ease;
+        }
+
+        body.theme-mom {
+            background: linear-gradient(135deg, #e91e63 0%, #f06292 100%);
+        }
+
+        body.theme-dad {
+            background: linear-gradient(135deg, #2196f3 0%, #64b5f6 100%);
         }
 
         .container {
@@ -37,6 +46,15 @@
             color: white;
             padding: 30px 20px;
             text-align: center;
+            transition: background 0.5s ease;
+        }
+
+        body.theme-mom .header {
+            background: linear-gradient(135deg, #e91e63 0%, #f06292 100%);
+        }
+
+        body.theme-dad .header {
+            background: linear-gradient(135deg, #2196f3 0%, #64b5f6 100%);
         }
 
         .header h1 {
@@ -61,6 +79,62 @@
 
         .storage-status.cloud {
             background: rgba(76, 175, 80, 0.3);
+        }
+
+        .team-selector-section {
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .team-selector-section h3 {
+            color: white;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+
+        .team-selector-global {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .team-btn-global {
+            padding: 12px 25px;
+            border: 3px solid white;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .team-btn-global:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .team-btn-global.active {
+            background: white;
+            color: #333;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .team-btn-global.mom.active {
+            background: #e91e63;
+            color: white;
+            border-color: #e91e63;
+        }
+
+        .team-btn-global.dad.active {
+            background: #2196f3;
+            color: white;
+            border-color: #2196f3;
         }
 
         .timer-section {
@@ -100,12 +174,37 @@
             background: #5568d3;
         }
 
+        body.theme-mom .btn {
+            background: #e91e63;
+        }
+
+        body.theme-mom .btn:hover {
+            background: #c2185b;
+        }
+
+        body.theme-dad .btn {
+            background: #2196f3;
+        }
+
+        body.theme-dad .btn:hover {
+            background: #1976d2;
+        }
+
         .btn-secondary {
             background: #6c757d;
         }
 
         .btn-secondary:hover {
             background: #5a6268;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
         }
 
         .countdown {
@@ -123,6 +222,15 @@
             font-weight: bold;
             color: #667eea;
             margin: 10px 0;
+            transition: color 0.5s ease;
+        }
+
+        body.theme-mom .countdown-display {
+            color: #e91e63;
+        }
+
+        body.theme-dad .countdown-display {
+            color: #2196f3;
         }
 
         .countdown-label {
@@ -157,6 +265,15 @@
         .scavenger-list h2 {
             margin-bottom: 15px;
             color: #667eea;
+            transition: color 0.5s ease;
+        }
+
+        body.theme-mom .scavenger-list h2 {
+            color: #e91e63;
+        }
+
+        body.theme-dad .scavenger-list h2 {
+            color: #2196f3;
         }
 
         .item {
@@ -211,10 +328,27 @@
             border-radius: 8px;
             cursor: pointer;
             font-size: 0.9em;
+            transition: background 0.3s ease;
         }
 
         .upload-btn:hover {
             background: #45a049;
+        }
+
+        body.theme-mom .upload-btn {
+            background: #e91e63;
+        }
+
+        body.theme-mom .upload-btn:hover {
+            background: #c2185b;
+        }
+
+        body.theme-dad .upload-btn {
+            background: #2196f3;
+        }
+
+        body.theme-dad .upload-btn:hover {
+            background: #1976d2;
         }
 
         .file-input {
@@ -272,6 +406,21 @@
             display: block;
         }
 
+        .scores-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #667eea;
+            transition: color 0.5s ease;
+        }
+
+        body.theme-mom .scores-title {
+            color: #e91e63;
+        }
+
+        body.theme-dad .scores-title {
+            color: #2196f3;
+        }
+
         .scores-container {
             display: flex;
             justify-content: space-around;
@@ -327,6 +476,15 @@
         .photos-gallery h2 {
             margin-bottom: 20px;
             color: #667eea;
+            transition: color 0.5s ease;
+        }
+
+        body.theme-mom .photos-gallery h2 {
+            color: #e91e63;
+        }
+
+        body.theme-dad .photos-gallery h2 {
+            color: #2196f3;
         }
 
         .photo-item {
@@ -392,6 +550,14 @@
             <div class="storage-status" id="storageStatus">💾 Local Storage</div>
         </div>
 
+        <div class="team-selector-section">
+            <h3>Choose Your Team:</h3>
+            <div class="team-selector-global">
+                <button class="team-btn-global mom" id="teamBtnMom" onclick="selectTeamGlobal('mom')">👩 Mom Team</button>
+                <button class="team-btn-global dad" id="teamBtnDad" onclick="selectTeamGlobal('dad')">👨 Dad Team</button>
+            </div>
+        </div>
+
         <div class="timer-section">
             <div class="time-input-group" id="timeInputGroup">
                 <label for="endTime">Hunt Ends At:</label>
@@ -401,13 +567,17 @@
             <div class="countdown" id="countdown">
                 <div class="countdown-label">Time Remaining:</div>
                 <div class="countdown-display" id="countdownDisplay">00:00:00</div>
-                <button class="btn btn-secondary" onclick="showTimeAdjust()">Adjust Time</button>
+                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 10px;">
+                    <button class="btn btn-secondary" onclick="showTimeAdjust()">Adjust Time</button>
+                    <button class="btn btn-danger" onclick="clearHunt()">Clear Hunt</button>
+                </div>
             </div>
         </div>
 
         <div class="hunt-ended" id="huntEnded">
             <h2>🎉 Hunt is Over! 🎉</h2>
             <p>Time to see the results!</p>
+            <button class="btn btn-danger" onclick="clearHunt()" style="margin-top: 15px;">Clear Hunt</button>
         </div>
 
         <div class="scavenger-list" id="scavengerList">
@@ -416,7 +586,7 @@
         </div>
 
         <div class="scores-section" id="scoresSection">
-            <h2 style="text-align: center; margin-bottom: 20px; color: #667eea;">Final Scores</h2>
+            <h2 class="scores-title">Final Scores</h2>
             <div class="scores-container">
                 <div class="team-score mom">
                     <h3>👩 Mom Team</h3>
@@ -485,11 +655,25 @@
         }
 
         // Initialize
-        function init() {
+        async function init() {
             initFirebase();
             loadData();
+            loadTeamSelection();
+            if (useFirebase && firebaseStorage) {
+                await loadPhotosFromFirebase();
+            }
             renderItems();
             checkHuntStatus();
+        }
+
+        // Load saved team selection
+        function loadTeamSelection() {
+            const savedTeam = localStorage.getItem('selectedTeam');
+            if (savedTeam) {
+                selectTeamGlobal(savedTeam, false);
+            } else {
+                selectTeamGlobal('mom', false);
+            }
         }
 
         // Load saved data
@@ -593,10 +777,6 @@
                         `).join('')}
                         ${endTime && endTime > new Date() ? `
                             <div>
-                                <div class="team-selector">
-                                    <button class="team-btn mom ${selectedTeam === 'mom' ? 'active' : ''}" onclick="selectTeam('mom')">👩 Mom</button>
-                                    <button class="team-btn dad ${selectedTeam === 'dad' ? 'active' : ''}" onclick="selectTeam('dad')">👨 Dad</button>
-                                </div>
                                 <input type="file" accept="image/*" class="file-input" id="file-${item.id}" onchange="uploadPhoto('${item.id}', this)" />
                                 <button class="upload-btn" onclick="document.getElementById('file-${item.id}').click()">📷 Add Photo</button>
                             </div>
@@ -607,13 +787,26 @@
             });
         }
 
-        // Select team
-        function selectTeam(team) {
+        // Select team globally and update theme
+        function selectTeamGlobal(team, save = true) {
             selectedTeam = team;
-            document.querySelectorAll('.team-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
+            
+            // Update button states
+            document.getElementById('teamBtnMom').classList.remove('active');
+            document.getElementById('teamBtnDad').classList.remove('active');
+            
+            if (team === 'mom') {
+                document.getElementById('teamBtnMom').classList.add('active');
+                document.body.className = 'theme-mom';
+            } else {
+                document.getElementById('teamBtnDad').classList.add('active');
+                document.body.className = 'theme-dad';
+            }
+            
+            // Save to localStorage
+            if (save) {
+                localStorage.setItem('selectedTeam', team);
+            }
         }
 
         // Upload photo
@@ -651,7 +844,7 @@
 
                     const photos = getPhotos();
                     photos.push(photo);
-                    savePhotos(photos);
+                    await savePhotos(photos);
                     
                     uploadBtn.textContent = originalText;
                     uploadBtn.disabled = false;
@@ -692,14 +885,67 @@
             }
         }
 
-        // Get photos
+        // Load photos from Firebase Storage
+        async function loadPhotosFromFirebase() {
+            try {
+                const metadataRef = firebaseStorage.ref().child('photos/metadata.json');
+                const url = await metadataRef.getDownloadURL();
+                const response = await fetch(url);
+                const photos = await response.json();
+                
+                // Merge with local photos (local takes precedence for conflicts)
+                const localPhotos = getPhotosLocal();
+                const mergedPhotos = [...photos];
+                
+                // Add local photos that aren't in Firebase
+                localPhotos.forEach(localPhoto => {
+                    if (!mergedPhotos.find(p => p.id === localPhoto.id)) {
+                        mergedPhotos.push(localPhoto);
+                    }
+                });
+                
+                savePhotosLocal(mergedPhotos);
+            } catch (error) {
+                // Metadata file doesn't exist yet, that's okay
+                console.log('No existing photos in Firebase, starting fresh');
+            }
+        }
+
+        // Save photos metadata to Firebase
+        async function savePhotosToFirebase(photos) {
+            if (!useFirebase || !firebaseStorage) return;
+            
+            try {
+                const metadataRef = firebaseStorage.ref().child('photos/metadata.json');
+                const metadataJson = JSON.stringify(photos);
+                const blob = new Blob([metadataJson], { type: 'application/json' });
+                await metadataRef.put(blob);
+            } catch (error) {
+                console.error('Error saving metadata to Firebase:', error);
+            }
+        }
+
+        // Get photos (from localStorage)
         function getPhotos() {
+            return getPhotosLocal();
+        }
+
+        // Get photos from localStorage
+        function getPhotosLocal() {
             const saved = localStorage.getItem('huntPhotos');
             return saved ? JSON.parse(saved) : [];
         }
 
-        // Save photos
-        function savePhotos(photos) {
+        // Save photos (to both localStorage and Firebase)
+        async function savePhotos(photos) {
+            savePhotosLocal(photos);
+            if (useFirebase && firebaseStorage) {
+                await savePhotosToFirebase(photos);
+            }
+        }
+
+        // Save photos to localStorage only
+        function savePhotosLocal(photos) {
             localStorage.setItem('huntPhotos', JSON.stringify(photos));
         }
 
@@ -754,6 +1000,55 @@
         function viewPhoto(itemId, photoId) {
             // Could add a modal here to view full-size photo
             console.log('View photo:', itemId, photoId);
+        }
+
+        // Clear hunt - removes all data
+        async function clearHunt() {
+            if (!confirm('Are you sure you want to clear the hunt? This will delete all photos and reset the timer. This cannot be undone!')) {
+                return;
+            }
+
+            // Stop countdown
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
+
+            // Clear end time
+            endTime = null;
+            localStorage.removeItem('huntEndTime');
+
+            // Clear photos from localStorage
+            localStorage.removeItem('huntPhotos');
+
+            // Clear photos from Firebase Storage
+            if (useFirebase && firebaseStorage) {
+                try {
+                    const photosRef = firebaseStorage.ref().child('photos');
+                    const listResult = await photosRef.listAll();
+                    
+                    // Delete all files in the photos folder
+                    const deletePromises = listResult.items.map(item => item.delete());
+                    await Promise.all(deletePromises);
+                    
+                    console.log('Cleared photos from Firebase Storage');
+                } catch (error) {
+                    console.error('Error clearing Firebase Storage:', error);
+                }
+            }
+
+            // Reset UI
+            document.getElementById('timeInputGroup').style.display = 'flex';
+            document.getElementById('countdown').classList.remove('show');
+            document.getElementById('huntEnded').classList.remove('show');
+            document.getElementById('scoresSection').classList.remove('show');
+            document.getElementById('photosGallery').classList.remove('show');
+            document.getElementById('endTime').value = '';
+
+            // Re-render items
+            document.getElementById('scavengerList').innerHTML = '<h2>Find & Photograph:</h2>';
+            renderItems();
+            updateScores();
         }
 
         // Initialize on load
