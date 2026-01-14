@@ -650,6 +650,7 @@
         let countdownInterval = null;
         let firebaseStorage = null;
         let useFirebase = false;
+        let endTimeSyncInterval = null;
 
         // Initialize Firebase if configured
         function initFirebase() {
@@ -675,13 +676,48 @@
         // Initialize
         async function init() {
             initFirebase();
-            loadData();
+            await loadData();
             loadTeamSelection();
             if (useFirebase && firebaseStorage) {
                 await loadPhotosFromFirebase();
+                // Start periodic sync of end time from Firebase (every 5 seconds)
+                endTimeSyncInterval = setInterval(syncEndTimeFromFirebase, 5000);
             }
             renderItems();
             checkHuntStatus();
+        }
+
+        // Sync end time from Firebase (for multi-device sync)
+        async function syncEndTimeFromFirebase() {
+            if (!useFirebase || !firebaseStorage) return;
+            
+            try {
+                const endTimeRef = firebaseStorage.ref().child('huntEndTime.json');
+                const url = await endTimeRef.getDownloadURL();
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (data.endTime) {
+                    const firebaseEndTime = new Date(data.endTime);
+                    // Only update if Firebase has a different time (someone else changed it)
+                    if (!endTime || firebaseEndTime.getTime() !== endTime.getTime()) {
+                        endTime = firebaseEndTime;
+                        localStorage.setItem('huntEndTime', endTime.toISOString());
+                        
+                        // Restart countdown if needed
+                        if (countdownInterval) {
+                            clearInterval(countdownInterval);
+                        }
+                        if (endTime > new Date()) {
+                            startCountdown();
+                        } else {
+                            showHuntEnded();
+                        }
+                    }
+                }
+            } catch (error) {
+                // File doesn't exist or error, that's okay
+            }
         }
 
         // Load saved team selection
@@ -695,7 +731,31 @@
         }
 
         // Load saved data
-        function loadData() {
+        async function loadData() {
+            // Try to load from Firebase first
+            if (useFirebase && firebaseStorage) {
+                try {
+                    const endTimeRef = firebaseStorage.ref().child('huntEndTime.json');
+                    const url = await endTimeRef.getDownloadURL();
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    
+                    if (data.endTime) {
+                        endTime = new Date(data.endTime);
+                        localStorage.setItem('huntEndTime', endTime.toISOString());
+                        if (endTime > new Date()) {
+                            startCountdown();
+                        } else {
+                            showHuntEnded();
+                        }
+                        return;
+                    }
+                } catch (error) {
+                    console.log('No end time in Firebase, checking localStorage');
+                }
+            }
+            
+            // Fallback to localStorage
             const savedEndTime = localStorage.getItem('huntEndTime');
             if (savedEndTime) {
                 endTime = new Date(savedEndTime);
@@ -707,8 +767,23 @@
             }
         }
 
+        // Save end time to Firebase
+        async function saveEndTimeToFirebase(endTimeValue) {
+            if (!useFirebase || !firebaseStorage) return;
+            
+            try {
+                const endTimeRef = firebaseStorage.ref().child('huntEndTime.json');
+                const data = { endTime: endTimeValue.toISOString() };
+                const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+                await endTimeRef.put(blob);
+                console.log('End time saved to Firebase');
+            } catch (error) {
+                console.error('Error saving end time to Firebase:', error);
+            }
+        }
+
         // Set end time
-        function setEndTime() {
+        async function setEndTime() {
             const input = document.getElementById('endTime');
             const timeValue = input.value;
             
@@ -720,6 +795,9 @@
             endTime = new Date(timeValue);
             localStorage.setItem('huntEndTime', endTime.toISOString());
             
+            // Save to Firebase
+            await saveEndTimeToFirebase(endTime);
+            
             document.getElementById('timeInputGroup').style.display = 'none';
             startCountdown();
         }
@@ -729,6 +807,14 @@
             document.getElementById('timeInputGroup').style.display = 'flex';
             if (countdownInterval) {
                 clearInterval(countdownInterval);
+            }
+            // Pre-fill the input with current end time if it exists
+            if (endTime) {
+                const input = document.getElementById('endTime');
+                const localDateTime = new Date(endTime.getTime() - endTime.getTimezoneOffset() * 60000)
+                    .toISOString()
+                    .slice(0, 16);
+                input.value = localDateTime;
             }
         }
 
@@ -1026,10 +1112,14 @@
                 return;
             }
 
-            // Stop countdown
+            // Stop countdown and sync
             if (countdownInterval) {
                 clearInterval(countdownInterval);
                 countdownInterval = null;
+            }
+            if (endTimeSyncInterval) {
+                clearInterval(endTimeSyncInterval);
+                endTimeSyncInterval = null;
             }
 
             // Clear end time
@@ -1039,9 +1129,10 @@
             // Clear photos from localStorage
             localStorage.removeItem('huntPhotos');
 
-            // Clear photos from Firebase Storage
+            // Clear data from Firebase Storage
             if (useFirebase && firebaseStorage) {
                 try {
+                    // Clear photos
                     const photosRef = firebaseStorage.ref().child('photos');
                     const listResult = await photosRef.listAll();
                     
@@ -1049,7 +1140,15 @@
                     const deletePromises = listResult.items.map(item => item.delete());
                     await Promise.all(deletePromises);
                     
-                    console.log('Cleared photos from Firebase Storage');
+                    // Clear end time
+                    const endTimeRef = firebaseStorage.ref().child('huntEndTime.json');
+                    try {
+                        await endTimeRef.delete();
+                    } catch (error) {
+                        // File might not exist, that's okay
+                    }
+                    
+                    console.log('Cleared data from Firebase Storage');
                 } catch (error) {
                     console.error('Error clearing Firebase Storage:', error);
                 }
