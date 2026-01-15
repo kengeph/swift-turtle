@@ -680,8 +680,31 @@
             
             // Load data - try Firebase first if available
             if (useFirebase && firebaseStorage) {
-                // Try to load from Firebase first
+                // Try to load from Firebase first - this will update endTime if found
+                // This MUST complete before we check localStorage
                 await syncEndTimeFromFirebase();
+                
+                // Only check localStorage if Firebase didn't have a time
+                // This ensures Firebase always takes precedence
+                if (!endTime) {
+                    const savedEndTime = localStorage.getItem('huntEndTime');
+                    if (savedEndTime) {
+                        const localTime = new Date(savedEndTime);
+                        // Only use localStorage if it's valid and in the future
+                        if (localTime && !isNaN(localTime.getTime())) {
+                            endTime = localTime;
+                            // Sync it back to Firebase
+                            await saveEndTimeToFirebase(endTime);
+                            document.getElementById('timeInputGroup').style.display = 'none';
+                            if (endTime > new Date()) {
+                                startCountdown();
+                            } else {
+                                showHuntEnded();
+                            }
+                        }
+                    }
+                }
+                
                 await loadPhotosFromFirebase();
                 
                 // Start periodic syncs
@@ -762,36 +785,9 @@
             }
         }
 
-        // Load saved data
+        // Load saved data (localStorage only - used when Firebase is not available)
         async function loadData() {
-            // Try to load from Firebase first
-            if (useFirebase && firebaseStorage) {
-                try {
-                    const endTimeRef = firebaseStorage.ref().child('huntEndTime.json');
-                    const url = await endTimeRef.getDownloadURL();
-                    const response = await fetch(url);
-                    const data = await response.json();
-                    
-                    if (data.endTime) {
-                        endTime = new Date(data.endTime);
-                        localStorage.setItem('huntEndTime', endTime.toISOString());
-                        
-                        // Hide time input and show countdown
-                        document.getElementById('timeInputGroup').style.display = 'none';
-                        
-                        if (endTime > new Date()) {
-                            startCountdown();
-                        } else {
-                            showHuntEnded();
-                        }
-                        return;
-                    }
-                } catch (error) {
-                    console.log('No end time in Firebase, checking localStorage');
-                }
-            }
-            
-            // Fallback to localStorage
+            // Only use this when Firebase is NOT available
             const savedEndTime = localStorage.getItem('huntEndTime');
             if (savedEndTime) {
                 endTime = new Date(savedEndTime);
