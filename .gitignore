@@ -20,3 +20,6 @@ bin-release/
 
 # Firebase config (contains sensitive keys)
 photoscavenger/firebase-config.js
+
+# FTP credentials (contains sensitive login info)
+photoscavenger/ftp-config.json
