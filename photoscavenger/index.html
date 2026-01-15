@@ -309,6 +309,33 @@
             gap: 10px;
         }
 
+        .item.finished {
+            background: #e8e8e8;
+            border: 2px solid #b0b0b0;
+            opacity: 0.7;
+        }
+
+        .item.finished .item-title {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        .item.finished .item-description {
+            color: #aaa;
+        }
+
+        .finished-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 3px solid #ccc;
+        }
+
+        .finished-section h2 {
+            color: #888;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
         .item-info {
             flex: 1;
             min-width: 200px;
@@ -810,7 +837,6 @@
                         if (endTime > new Date()) {
                             startCountdown();
                             // Re-render items to show/hide upload buttons
-                            document.getElementById('scavengerList').innerHTML = '<h2>Find & Photograph:</h2>';
                             renderItems();
                         } else {
                             showHuntEnded();
@@ -913,7 +939,6 @@
             startCountdown();
             
             // Re-render items to show upload buttons
-            document.getElementById('scavengerList').innerHTML = '<h2>Find & Photograph:</h2>';
             renderItems();
         }
 
@@ -981,11 +1006,25 @@
         // Render items
         function renderItems() {
             const container = document.getElementById('scavengerList');
-            // Clear existing items (but keep the h2 if it exists)
-            const existingItems = container.querySelectorAll('.item');
-            existingItems.forEach(item => item.remove());
+            // Clear existing items and sections
+            container.innerHTML = '<h2>Find & Photograph:</h2>';
             
+            const huntActive = endTime && endTime > new Date();
+            const activeItems = [];
+            const finishedItems = [];
+            
+            // Separate items into active and finished
             items.forEach(item => {
+                const hasPhoto = hasTeamPhotoForItem(item.id);
+                if (hasPhoto) {
+                    finishedItems.push(item);
+                } else {
+                    activeItems.push(item);
+                }
+            });
+            
+            // Render active items
+            activeItems.forEach(item => {
                 const photos = getPhotosForItem(item.id);
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'item';
@@ -998,7 +1037,7 @@
                         ${photos.map(photo => `
                             <img src="${photo.data}" alt="Photo" class="photo-preview" onclick="viewPhoto('${item.id}', '${photo.id}')" />
                         `).join('')}
-                        ${endTime && endTime > new Date() ? `
+                        ${huntActive ? `
                             <div>
                                 <input type="file" accept="image/*" class="file-input" id="file-${item.id}" onchange="uploadPhoto('${item.id}', this)" />
                                 <button class="upload-btn" onclick="document.getElementById('file-${item.id}').click()">📷 Add Photo</button>
@@ -1008,6 +1047,40 @@
                 `;
                 container.appendChild(itemDiv);
             });
+            
+            // Render finished items section if there are any
+            if (finishedItems.length > 0) {
+                const finishedSection = document.createElement('div');
+                finishedSection.className = 'finished-section';
+                finishedSection.innerHTML = '<h2>✅ Finished</h2>';
+                
+                finishedItems.forEach(item => {
+                    const photos = getPhotosForItem(item.id);
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'item finished';
+                    const buttonText = huntActive ? '📷 Change Photo' : '';
+                    itemDiv.innerHTML = `
+                        <div class="item-info">
+                            <div class="item-title">${item.title}</div>
+                            <div class="item-description">${item.description}</div>
+                        </div>
+                        <div class="item-photos">
+                            ${photos.map(photo => `
+                                <img src="${photo.data}" alt="Photo" class="photo-preview" onclick="viewPhoto('${item.id}', '${photo.id}')" />
+                            `).join('')}
+                            ${huntActive ? `
+                                <div>
+                                    <input type="file" accept="image/*" class="file-input" id="file-${item.id}" onchange="uploadPhoto('${item.id}', this)" />
+                                    <button class="upload-btn" onclick="document.getElementById('file-${item.id}').click()">${buttonText}</button>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                    finishedSection.appendChild(itemDiv);
+                });
+                
+                container.appendChild(finishedSection);
+            }
         }
 
         // Select team globally and update theme
@@ -1029,6 +1102,12 @@
             // Save to localStorage
             if (save) {
                 localStorage.setItem('selectedTeam', team);
+            }
+            
+            // Re-render items to reflect team change
+            renderItems();
+            if (endTime && endTime <= new Date()) {
+                renderGallery();
             }
         }
 
@@ -1073,7 +1152,6 @@
                     uploadBtn.disabled = false;
                     
                     // Re-render items
-                    document.getElementById('scavengerList').innerHTML = '<h2>Find & Photograph:</h2>';
                     renderItems();
                     updateScores();
                 } catch (error) {
@@ -1100,7 +1178,6 @@
                     savePhotos(photos);
                     
                     // Re-render items
-                    document.getElementById('scavengerList').innerHTML = '<h2>Find & Photograph:</h2>';
                     renderItems();
                     updateScores();
                 };
@@ -1201,7 +1278,6 @@
                 if (needsUpdate) {
                     savePhotosLocal(localPhotos);
                     // Re-render items to show new photos
-                    document.getElementById('scavengerList').innerHTML = '<h2>Find & Photograph:</h2>';
                     renderItems();
                     updateScores();
                 }
@@ -1248,9 +1324,24 @@
             localStorage.setItem('huntPhotos', JSON.stringify(photos));
         }
 
-        // Get photos for item
+        // Get photos for item (filtered by team during hunt)
         function getPhotosForItem(itemId) {
-            return getPhotos().filter(p => p.itemId === itemId);
+            const allPhotos = getPhotos().filter(p => p.itemId === itemId);
+            const huntActive = endTime && endTime > new Date();
+            
+            // During hunt, only show current team's photos
+            if (huntActive) {
+                return allPhotos.filter(p => p.team === selectedTeam);
+            }
+            
+            // After hunt, show all photos
+            return allPhotos;
+        }
+
+        // Check if current team has a photo for an item
+        function hasTeamPhotoForItem(itemId) {
+            const allPhotos = getPhotos().filter(p => p.itemId === itemId && p.team === selectedTeam);
+            return allPhotos.length > 0;
         }
 
         // Update scores
@@ -1266,14 +1357,22 @@
         // Render gallery
         function renderGallery() {
             const container = document.getElementById('photosGallery');
-            const photos = getPhotos();
+            const allPhotos = getPhotos();
+            const huntActive = endTime && endTime > new Date();
+            
+            // During hunt, only show current team's photos
+            const photos = huntActive ? allPhotos.filter(p => p.team === selectedTeam) : allPhotos;
             
             if (photos.length === 0) {
-                container.innerHTML = '<h2>All Photos</h2><p>No photos uploaded yet.</p>';
+                const message = huntActive 
+                    ? '<h2>Your Photos</h2><p>No photos uploaded yet.</p>'
+                    : '<h2>All Photos</h2><p>No photos uploaded yet.</p>';
+                container.innerHTML = message;
                 return;
             }
 
-            let html = '<h2>All Photos</h2>';
+            const title = huntActive ? '<h2>Your Photos</h2>' : '<h2>All Photos</h2>';
+            let html = title;
             
             items.forEach(item => {
                 const itemPhotos = photos.filter(p => p.itemId === item.id);
@@ -1358,7 +1457,6 @@
             document.getElementById('endTime').value = '';
 
             // Re-render items
-            document.getElementById('scavengerList').innerHTML = '<h2>Find & Photograph:</h2>';
             renderItems();
             updateScores();
         }
