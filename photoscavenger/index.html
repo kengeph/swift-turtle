@@ -744,31 +744,50 @@
                 const endTimeRef = firebaseStorage.ref().child('huntEndTime.json');
                 console.log('Firebase Storage reference created');
                 
-                // Try using getBytes first (avoids CORS issues)
+                // Try using getBytes first (avoids CORS issues) if available
                 let data;
-                try {
-                    const bytes = await endTimeRef.getBytes();
-                    const text = new TextDecoder('utf-8').decode(bytes);
-                    data = JSON.parse(text);
-                    console.log('Loaded end time from Firebase using getBytes:', data);
-                } catch (bytesError) {
-                    // Fallback to download URL method
-                    console.log('getBytes failed, trying download URL method:', bytesError);
-                    const url = await endTimeRef.getDownloadURL();
-                    console.log('Download URL obtained:', url);
-                    
-                    const response = await fetch(url, {
-                        mode: 'cors',
-                        credentials: 'omit'
-                    });
-                    console.log('Fetch response status:', response.status, response.statusText);
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                if (typeof endTimeRef.getBytes === 'function') {
+                    try {
+                        const bytes = await endTimeRef.getBytes();
+                        const text = new TextDecoder('utf-8').decode(bytes);
+                        data = JSON.parse(text);
+                        console.log('Loaded end time from Firebase using getBytes:', data);
+                    } catch (bytesError) {
+                        console.log('getBytes failed, trying download URL method:', bytesError);
+                        // Fall through to download URL method
                     }
-                    
-                    data = await response.json();
-                    console.log('Loaded end time from Firebase using download URL:', data);
+                }
+                
+                // Fallback to download URL method if getBytes not available or failed
+                if (!data) {
+                    try {
+                        const url = await endTimeRef.getDownloadURL();
+                        console.log('Download URL obtained:', url);
+                        
+                        // Use XMLHttpRequest instead of fetch to avoid CORS preflight
+                        data = await new Promise((resolve, reject) => {
+                            const xhr = new XMLHttpRequest();
+                            xhr.open('GET', url, true);
+                            xhr.onload = function() {
+                                if (xhr.status === 200) {
+                                    try {
+                                        resolve(JSON.parse(xhr.responseText));
+                                    } catch (e) {
+                                        reject(new Error('Failed to parse JSON: ' + e.message));
+                                    }
+                                } else {
+                                    reject(new Error(`HTTP error! status: ${xhr.status}`));
+                                }
+                            };
+                            xhr.onerror = function() {
+                                reject(new Error('Network error'));
+                            };
+                            xhr.send();
+                        });
+                        console.log('Loaded end time from Firebase using download URL:', data);
+                    } catch (urlError) {
+                        throw urlError;
+                    }
                 }
                 
                 if (data.endTime) {
@@ -815,8 +834,11 @@
                 
                 // Check if it's a 404 (file doesn't exist)
                 if (error.code === 'storage/object-not-found' || 
-                    (error.message && error.message.includes('404'))) {
-                    console.log('huntEndTime.json does not exist in Firebase Storage yet');
+                    error.code === 'storage/404' ||
+                    (error.message && (error.message.includes('404') || error.message.includes('object-not-found')))) {
+                    console.log('huntEndTime.json does not exist in Firebase Storage yet - this is normal if no hunt has been started');
+                    // Don't show error, just log it - this is expected on first load
+                    return;
                 }
                 
                 // If we don't have a local end time either, show the input
@@ -1089,23 +1111,48 @@
             try {
                 const metadataRef = firebaseStorage.ref().child('photos/metadata.json');
                 
-                // Try using getBytes first (avoids CORS issues)
+                // Try using getBytes first (avoids CORS issues) if available
                 let photos;
-                try {
-                    const bytes = await metadataRef.getBytes();
-                    const text = new TextDecoder('utf-8').decode(bytes);
-                    photos = JSON.parse(text);
-                    console.log('Loaded photos from Firebase using getBytes');
-                } catch (bytesError) {
-                    // Fallback to download URL method
-                    console.log('getBytes failed, trying download URL method:', bytesError);
-                    const url = await metadataRef.getDownloadURL();
-                    const response = await fetch(url, {
-                        mode: 'cors',
-                        credentials: 'omit'
-                    });
-                    photos = await response.json();
-                    console.log('Loaded photos from Firebase using download URL');
+                if (typeof metadataRef.getBytes === 'function') {
+                    try {
+                        const bytes = await metadataRef.getBytes();
+                        const text = new TextDecoder('utf-8').decode(bytes);
+                        photos = JSON.parse(text);
+                        console.log('Loaded photos from Firebase using getBytes');
+                    } catch (bytesError) {
+                        console.log('getBytes failed, trying download URL method:', bytesError);
+                        // Fall through to download URL method
+                    }
+                }
+                
+                // Fallback to download URL method if getBytes not available or failed
+                if (!photos) {
+                    try {
+                        const url = await metadataRef.getDownloadURL();
+                        // Use XMLHttpRequest instead of fetch to avoid CORS preflight
+                        photos = await new Promise((resolve, reject) => {
+                            const xhr = new XMLHttpRequest();
+                            xhr.open('GET', url, true);
+                            xhr.onload = function() {
+                                if (xhr.status === 200) {
+                                    try {
+                                        resolve(JSON.parse(xhr.responseText));
+                                    } catch (e) {
+                                        reject(new Error('Failed to parse JSON: ' + e.message));
+                                    }
+                                } else {
+                                    reject(new Error(`HTTP error! status: ${xhr.status}`));
+                                }
+                            };
+                            xhr.onerror = function() {
+                                reject(new Error('Network error'));
+                            };
+                            xhr.send();
+                        });
+                        console.log('Loaded photos from Firebase using download URL');
+                    } catch (urlError) {
+                        throw urlError;
+                    }
                 }
                 
                 // Merge with local photos (Firebase takes precedence for conflicts)
