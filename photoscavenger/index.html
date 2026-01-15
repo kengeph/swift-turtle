@@ -682,6 +682,8 @@
                 await loadPhotosFromFirebase();
                 // Start periodic sync of end time from Firebase (every 5 seconds)
                 endTimeSyncInterval = setInterval(syncEndTimeFromFirebase, 5000);
+                // Start periodic sync of photos from Firebase (every 3 seconds)
+                setInterval(syncPhotosFromFirebase, 3000);
             }
             renderItems();
             checkHuntStatus();
@@ -710,6 +712,9 @@
                         }
                         if (endTime > new Date()) {
                             startCountdown();
+                            // Re-render items to show/hide upload buttons
+                            document.getElementById('scavengerList').innerHTML = '<h2>Find & Photograph:</h2>';
+                            renderItems();
                         } else {
                             showHuntEnded();
                         }
@@ -800,6 +805,10 @@
             
             document.getElementById('timeInputGroup').style.display = 'none';
             startCountdown();
+            
+            // Re-render items to show upload buttons
+            document.getElementById('scavengerList').innerHTML = '<h2>Find & Photograph:</h2>';
+            renderItems();
         }
 
         // Show time adjust
@@ -866,6 +875,10 @@
         // Render items
         function renderItems() {
             const container = document.getElementById('scavengerList');
+            // Clear existing items (but keep the h2 if it exists)
+            const existingItems = container.querySelectorAll('.item');
+            existingItems.forEach(item => item.remove());
+            
             items.forEach(item => {
                 const photos = getPhotosForItem(item.id);
                 const itemDiv = document.createElement('div');
@@ -997,7 +1010,7 @@
                 const response = await fetch(url);
                 const photos = await response.json();
                 
-                // Merge with local photos (local takes precedence for conflicts)
+                // Merge with local photos (Firebase takes precedence for conflicts)
                 const localPhotos = getPhotosLocal();
                 const mergedPhotos = [...photos];
                 
@@ -1009,9 +1022,44 @@
                 });
                 
                 savePhotosLocal(mergedPhotos);
+                return true;
             } catch (error) {
                 // Metadata file doesn't exist yet, that's okay
                 console.log('No existing photos in Firebase, starting fresh');
+                return false;
+            }
+        }
+
+        // Sync photos from Firebase (for multi-device sync)
+        async function syncPhotosFromFirebase() {
+            if (!useFirebase || !firebaseStorage) return;
+            
+            try {
+                const metadataRef = firebaseStorage.ref().child('photos/metadata.json');
+                const url = await metadataRef.getDownloadURL();
+                const response = await fetch(url);
+                const firebasePhotos = await response.json();
+                
+                const localPhotos = getPhotosLocal();
+                let needsUpdate = false;
+                
+                // Check if Firebase has photos we don't have locally
+                firebasePhotos.forEach(fbPhoto => {
+                    if (!localPhotos.find(p => p.id === fbPhoto.id)) {
+                        localPhotos.push(fbPhoto);
+                        needsUpdate = true;
+                    }
+                });
+                
+                if (needsUpdate) {
+                    savePhotosLocal(localPhotos);
+                    // Re-render items to show new photos
+                    document.getElementById('scavengerList').innerHTML = '<h2>Find & Photograph:</h2>';
+                    renderItems();
+                    updateScores();
+                }
+            } catch (error) {
+                // File doesn't exist or error, that's okay
             }
         }
 
