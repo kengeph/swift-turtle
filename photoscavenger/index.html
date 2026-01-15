@@ -744,18 +744,32 @@
                 const endTimeRef = firebaseStorage.ref().child('huntEndTime.json');
                 console.log('Firebase Storage reference created');
                 
-                const url = await endTimeRef.getDownloadURL();
-                console.log('Download URL obtained:', url);
-                
-                const response = await fetch(url);
-                console.log('Fetch response status:', response.status, response.statusText);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                // Try using getBytes first (avoids CORS issues)
+                let data;
+                try {
+                    const bytes = await endTimeRef.getBytes();
+                    const text = new TextDecoder('utf-8').decode(bytes);
+                    data = JSON.parse(text);
+                    console.log('Loaded end time from Firebase using getBytes:', data);
+                } catch (bytesError) {
+                    // Fallback to download URL method
+                    console.log('getBytes failed, trying download URL method:', bytesError);
+                    const url = await endTimeRef.getDownloadURL();
+                    console.log('Download URL obtained:', url);
+                    
+                    const response = await fetch(url, {
+                        mode: 'cors',
+                        credentials: 'omit'
+                    });
+                    console.log('Fetch response status:', response.status, response.statusText);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    data = await response.json();
+                    console.log('Loaded end time from Firebase using download URL:', data);
                 }
-                
-                const data = await response.json();
-                console.log('Loaded end time from Firebase:', data);
                 
                 if (data.endTime) {
                     const firebaseEndTime = new Date(data.endTime);
@@ -792,6 +806,19 @@
                     code: error.code,
                     name: error.name
                 });
+                
+                // Check if it's a CORS error
+                if (error.message && error.message.includes('CORS')) {
+                    console.error('CORS Error: Firebase Storage needs CORS configuration for swift-turtle.com');
+                    console.error('See FIREBASE-CORS-SETUP.md for instructions');
+                }
+                
+                // Check if it's a 404 (file doesn't exist)
+                if (error.code === 'storage/object-not-found' || 
+                    (error.message && error.message.includes('404'))) {
+                    console.log('huntEndTime.json does not exist in Firebase Storage yet');
+                }
+                
                 // If we don't have a local end time either, show the input
                 if (!endTime) {
                     document.getElementById('timeInputGroup').style.display = 'flex';
@@ -1061,9 +1088,25 @@
         async function loadPhotosFromFirebase() {
             try {
                 const metadataRef = firebaseStorage.ref().child('photos/metadata.json');
-                const url = await metadataRef.getDownloadURL();
-                const response = await fetch(url);
-                const photos = await response.json();
+                
+                // Try using getBytes first (avoids CORS issues)
+                let photos;
+                try {
+                    const bytes = await metadataRef.getBytes();
+                    const text = new TextDecoder('utf-8').decode(bytes);
+                    photos = JSON.parse(text);
+                    console.log('Loaded photos from Firebase using getBytes');
+                } catch (bytesError) {
+                    // Fallback to download URL method
+                    console.log('getBytes failed, trying download URL method:', bytesError);
+                    const url = await metadataRef.getDownloadURL();
+                    const response = await fetch(url, {
+                        mode: 'cors',
+                        credentials: 'omit'
+                    });
+                    photos = await response.json();
+                    console.log('Loaded photos from Firebase using download URL');
+                }
                 
                 // Merge with local photos (Firebase takes precedence for conflicts)
                 const localPhotos = getPhotosLocal();
