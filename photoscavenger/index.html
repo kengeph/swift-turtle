@@ -740,9 +740,15 @@
             }
             
             try {
+                console.log('Attempting to load huntEndTime.json from Firebase Storage...');
                 const endTimeRef = firebaseStorage.ref().child('huntEndTime.json');
+                console.log('Firebase Storage reference created');
+                
                 const url = await endTimeRef.getDownloadURL();
+                console.log('Download URL obtained:', url);
+                
                 const response = await fetch(url);
+                console.log('Fetch response status:', response.status, response.statusText);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -780,7 +786,12 @@
                 }
             } catch (error) {
                 // File doesn't exist or error
-                console.log('No end time in Firebase or error:', error.message);
+                console.log('Error loading end time from Firebase:', error);
+                console.log('Error details:', {
+                    message: error.message,
+                    code: error.code,
+                    name: error.name
+                });
                 // If we don't have a local end time either, show the input
                 if (!endTime) {
                     document.getElementById('timeInputGroup').style.display = 'flex';
