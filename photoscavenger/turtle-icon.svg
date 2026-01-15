@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Turtle shell -->
+  <ellipse cx="50" cy="55" rx="35" ry="30" fill="#4CAF50" stroke="#2E7D32" stroke-width="2"/>
+  <!-- Shell pattern -->
+  <path d="M 50 25 L 50 85 M 25 55 L 75 55" stroke="#2E7D32" stroke-width="1.5" opacity="0.6"/>
+  <ellipse cx="50" cy="55" rx="20" ry="18" fill="none" stroke="#2E7D32" stroke-width="1" opacity="0.6"/>
+  <!-- Head -->
+  <ellipse cx="50" cy="30" rx="12" ry="10" fill="#66BB6A"/>
+  <!-- Eyes -->
+  <circle cx="46" cy="28" r="2" fill="#000"/>
+  <circle cx="54" cy="28" r="2" fill="#000"/>
+  <!-- Front legs -->
+  <ellipse cx="35" cy="50" rx="6" ry="8" fill="#66BB6A"/>
+  <ellipse cx="65" cy="50" rx="6" ry="8" fill="#66BB6A"/>
+  <!-- Back legs -->
+  <ellipse cx="30" cy="70" rx="6" ry="8" fill="#66BB6A"/>
+  <ellipse cx="70" cy="70" rx="6" ry="8" fill="#66BB6A"/>
+  <!-- Tail -->
+  <ellipse cx="50" cy="80" rx="4" ry="6" fill="#66BB6A"/>
+</svg>
