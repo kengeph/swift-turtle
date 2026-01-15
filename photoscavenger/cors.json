@@ -1,0 +1,13 @@
+[
+  {
+    "origin": [
+      "https://swift-turtle.com",
+      "http://swift-turtle.com",
+      "https://www.swift-turtle.com",
+      "http://www.swift-turtle.com"
+    ],
+    "method": ["GET", "HEAD", "POST", "PUT", "DELETE"],
+    "responseHeader": ["Content-Type", "Authorization"],
+    "maxAgeSeconds": 3600
+  }
+]
