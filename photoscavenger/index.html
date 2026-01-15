@@ -654,20 +654,33 @@
 
         // Initialize Firebase if configured
         function initFirebase() {
-            if (typeof firebaseConfig !== 'undefined' && USE_FIREBASE && firebaseConfig.apiKey !== 'YOUR_API_KEY_HERE') {
+            console.log('Initializing Firebase...');
+            console.log('firebaseConfig defined:', typeof firebaseConfig !== 'undefined');
+            console.log('USE_FIREBASE:', typeof USE_FIREBASE !== 'undefined' ? USE_FIREBASE : 'undefined');
+            
+            if (typeof firebaseConfig !== 'undefined' && typeof USE_FIREBASE !== 'undefined' && USE_FIREBASE && firebaseConfig.apiKey !== 'YOUR_API_KEY_HERE') {
                 try {
                     firebase.initializeApp(firebaseConfig);
                     firebaseStorage = firebase.storage();
                     useFirebase = true;
                     document.getElementById('storageStatus').textContent = '☁️ Cloud Storage (Firebase)';
                     document.getElementById('storageStatus').classList.add('cloud');
-                    console.log('Firebase Storage initialized');
+                    console.log('Firebase Storage initialized successfully');
                 } catch (error) {
                     console.error('Firebase initialization error:', error);
                     useFirebase = false;
                     document.getElementById('storageStatus').textContent = '💾 Local Storage (Firebase Error)';
                 }
             } else {
+                if (typeof firebaseConfig === 'undefined') {
+                    console.warn('firebase-config.js not loaded or firebaseConfig not defined');
+                } else if (typeof USE_FIREBASE === 'undefined') {
+                    console.warn('USE_FIREBASE not defined in firebase-config.js');
+                } else if (!USE_FIREBASE) {
+                    console.log('USE_FIREBASE is set to false');
+                } else if (firebaseConfig.apiKey === 'YOUR_API_KEY_HERE') {
+                    console.warn('Firebase config not filled in - using template values');
+                }
                 console.log('Using localStorage for photo storage');
                 document.getElementById('storageStatus').textContent = '💾 Local Storage';
             }
