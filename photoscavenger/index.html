@@ -680,8 +680,9 @@
             loadTeamSelection();
             if (useFirebase && firebaseStorage) {
                 await loadPhotosFromFirebase();
-                // Start periodic sync of end time from Firebase (every 5 seconds)
-                endTimeSyncInterval = setInterval(syncEndTimeFromFirebase, 5000);
+                // Sync immediately, then start periodic sync of end time from Firebase (every 3 seconds)
+                await syncEndTimeFromFirebase();
+                endTimeSyncInterval = setInterval(syncEndTimeFromFirebase, 3000);
                 // Start periodic sync of photos from Firebase (every 3 seconds)
                 setInterval(syncPhotosFromFirebase, 3000);
             }
@@ -701,10 +702,13 @@
                 
                 if (data.endTime) {
                     const firebaseEndTime = new Date(data.endTime);
-                    // Only update if Firebase has a different time (someone else changed it)
+                    // Only update if Firebase has a different time (someone else changed it) or we don't have one locally
                     if (!endTime || firebaseEndTime.getTime() !== endTime.getTime()) {
                         endTime = firebaseEndTime;
                         localStorage.setItem('huntEndTime', endTime.toISOString());
+                        
+                        // Hide time input and show countdown
+                        document.getElementById('timeInputGroup').style.display = 'none';
                         
                         // Restart countdown if needed
                         if (countdownInterval) {
@@ -721,7 +725,10 @@
                     }
                 }
             } catch (error) {
-                // File doesn't exist or error, that's okay
+                // File doesn't exist or error, that's okay - only log if we expected it to exist
+                if (endTime) {
+                    console.log('Error syncing end time from Firebase:', error);
+                }
             }
         }
 
@@ -748,6 +755,10 @@
                     if (data.endTime) {
                         endTime = new Date(data.endTime);
                         localStorage.setItem('huntEndTime', endTime.toISOString());
+                        
+                        // Hide time input and show countdown
+                        document.getElementById('timeInputGroup').style.display = 'none';
+                        
                         if (endTime > new Date()) {
                             startCountdown();
                         } else {
@@ -764,6 +775,10 @@
             const savedEndTime = localStorage.getItem('huntEndTime');
             if (savedEndTime) {
                 endTime = new Date(savedEndTime);
+                
+                // Hide time input and show countdown
+                document.getElementById('timeInputGroup').style.display = 'none';
+                
                 if (endTime > new Date()) {
                     startCountdown();
                 } else {
