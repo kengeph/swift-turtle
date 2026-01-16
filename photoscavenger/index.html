@@ -1416,7 +1416,7 @@
                 endTimeSyncInterval = null;
             }
 
-            // Clear end time
+            // Clear end time - do this first to prevent sync from restoring it
             endTime = null;
             localStorage.removeItem('huntEndTime');
 
@@ -1426,6 +1426,23 @@
             // Clear data from Firebase Storage
             if (useFirebase && firebaseStorage) {
                 try {
+                    // Clear end time FIRST to prevent sync from restoring it
+                    const endTimeRef = firebaseStorage.ref().child('huntEndTime.json');
+                    try {
+                        await endTimeRef.delete();
+                        console.log('Deleted huntEndTime.json from Firebase');
+                    } catch (error) {
+                        // Only ignore if file doesn't exist, log other errors
+                        if (error.code === 'storage/object-not-found' || 
+                            error.code === 'storage/404' ||
+                            (error.message && (error.message.includes('404') || error.message.includes('object-not-found')))) {
+                            console.log('huntEndTime.json does not exist in Firebase (already cleared)');
+                        } else {
+                            console.error('Error deleting huntEndTime.json from Firebase:', error);
+                            // Try to continue anyway - we've cleared local state
+                        }
+                    }
+                    
                     // Clear photos
                     const photosRef = firebaseStorage.ref().child('photos');
                     const listResult = await photosRef.listAll();
@@ -1433,14 +1450,6 @@
                     // Delete all files in the photos folder
                     const deletePromises = listResult.items.map(item => item.delete());
                     await Promise.all(deletePromises);
-                    
-                    // Clear end time
-                    const endTimeRef = firebaseStorage.ref().child('huntEndTime.json');
-                    try {
-                        await endTimeRef.delete();
-                    } catch (error) {
-                        // File might not exist, that's okay
-                    }
                     
                     console.log('Cleared data from Firebase Storage');
                 } catch (error) {
