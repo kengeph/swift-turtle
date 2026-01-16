@@ -819,7 +819,8 @@
                     }
                 }
                 
-                if (data.endTime) {
+                // Only process if endTime exists and is not null
+                if (data.endTime && data.endTime !== null) {
                     const firebaseEndTime = new Date(data.endTime);
                     // Only update if Firebase has a different time (someone else changed it) or we don't have one locally
                     if (!endTime || firebaseEndTime.getTime() !== endTime.getTime()) {
@@ -843,6 +844,21 @@
                         }
                     } else {
                         console.log('End time already matches Firebase');
+                    }
+                } else if (data.endTime === null) {
+                    // Firebase has null, which means hunt was cleared - clear local state too
+                    console.log('Firebase indicates hunt was cleared (endTime is null)');
+                    if (endTime !== null) {
+                        endTime = null;
+                        localStorage.removeItem('huntEndTime');
+                        document.getElementById('timeInputGroup').style.display = 'flex';
+                        if (countdownInterval) {
+                            clearInterval(countdownInterval);
+                            countdownInterval = null;
+                        }
+                        document.getElementById('countdown').classList.remove('show');
+                        document.getElementById('huntEnded').classList.remove('show');
+                        renderItems();
                     }
                 }
             } catch (error) {
@@ -1428,18 +1444,35 @@
                 try {
                     // Clear end time FIRST to prevent sync from restoring it
                     const endTimeRef = firebaseStorage.ref().child('huntEndTime.json');
+                    let deleteSuccess = false;
+                    
+                    // Try to delete the file
                     try {
                         await endTimeRef.delete();
                         console.log('Deleted huntEndTime.json from Firebase');
+                        deleteSuccess = true;
                     } catch (error) {
                         // Only ignore if file doesn't exist, log other errors
                         if (error.code === 'storage/object-not-found' || 
                             error.code === 'storage/404' ||
                             (error.message && (error.message.includes('404') || error.message.includes('object-not-found')))) {
                             console.log('huntEndTime.json does not exist in Firebase (already cleared)');
+                            deleteSuccess = true; // Consider it successful if file doesn't exist
                         } else {
                             console.error('Error deleting huntEndTime.json from Firebase:', error);
-                            // Try to continue anyway - we've cleared local state
+                            console.log('Attempting to overwrite with null instead...');
+                        }
+                    }
+                    
+                    // If delete failed, overwrite with null to ensure it's cleared
+                    if (!deleteSuccess) {
+                        try {
+                            const emptyData = { endTime: null };
+                            const blob = new Blob([JSON.stringify(emptyData)], { type: 'application/json' });
+                            await endTimeRef.put(blob);
+                            console.log('Overwrote huntEndTime.json with null in Firebase');
+                        } catch (overwriteError) {
+                            console.error('Error overwriting huntEndTime.json:', overwriteError);
                         }
                     }
                     
