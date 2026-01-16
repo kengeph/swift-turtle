@@ -367,6 +367,14 @@
             border: 2px solid #667eea;
         }
 
+        .photo-preview.mom {
+            border-color: #e91e63;
+        }
+
+        .photo-preview.dad {
+            border-color: #2196f3;
+        }
+
         .upload-btn {
             padding: 8px 15px;
             background: #4CAF50;
@@ -1051,7 +1059,7 @@
                     </div>
                     <div class="item-photos">
                         ${photos.map(photo => `
-                            <img src="${photo.data}" alt="Photo" class="photo-preview" onclick="viewPhoto('${item.id}', '${photo.id}')" />
+                            <img src="${photo.data}" alt="Photo" class="photo-preview ${photo.team}" onclick="viewPhoto('${item.id}', '${photo.id}')" />
                         `).join('')}
                         ${huntActive ? `
                             <div>
@@ -1082,7 +1090,7 @@
                         </div>
                         <div class="item-photos">
                             ${photos.map(photo => `
-                                <img src="${photo.data}" alt="Photo" class="photo-preview" onclick="viewPhoto('${item.id}', '${photo.id}')" />
+                                <img src="${photo.data}" alt="Photo" class="photo-preview ${photo.team}" onclick="viewPhoto('${item.id}', '${photo.id}')" />
                             `).join('')}
                             ${huntActive ? `
                                 <div>
