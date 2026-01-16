@@ -880,7 +880,8 @@
                 await syncEndTimeFromFirebase();
                 
                 // Only check localStorage if Firebase didn't have a time
-                // This ensures Firebase always takes precedence
+                // syncEndTimeFromFirebase already handles null and clears localStorage
+                // So if endTime is still null after sync, it means Firebase was cleared or doesn't exist
                 if (!endTime) {
                     const savedEndTime = localStorage.getItem('huntEndTime');
                     if (savedEndTime) {
@@ -1002,18 +1003,22 @@
                 } else if (data.endTime === null) {
                     // Firebase has null, which means hunt was cleared - clear local state too
                     console.log('Firebase indicates hunt was cleared (endTime is null)');
-                    if (endTime !== null) {
-                        endTime = null;
-                        localStorage.removeItem('huntEndTime');
-                        document.getElementById('timeInputGroup').style.display = 'flex';
-                        if (countdownInterval) {
-                            clearInterval(countdownInterval);
-                            countdownInterval = null;
-                        }
-                        document.getElementById('countdown').classList.remove('show');
-                        document.getElementById('huntEnded').classList.remove('show');
-                        renderItems();
+                    endTime = null;
+                    localStorage.removeItem('huntEndTime');
+                    // Also clear photos from localStorage when hunt is cleared
+                    localStorage.removeItem('huntPhotos');
+                    document.getElementById('timeInputGroup').style.display = 'flex';
+                    if (countdownInterval) {
+                        clearInterval(countdownInterval);
+                        countdownInterval = null;
                     }
+                    document.getElementById('countdown').classList.remove('show');
+                    document.getElementById('huntEnded').classList.remove('show');
+                    document.getElementById('scoresSection').classList.remove('show');
+                    document.getElementById('photosGallery').classList.remove('show');
+                    document.getElementById('scavengerList').style.display = 'block';
+                    renderItems();
+                    updateInstructions();
                 }
             } catch (error) {
                 // File doesn't exist or error
@@ -1226,7 +1231,7 @@
                     </div>
                     <div class="item-photos">
                         ${photos.map(photo => `
-                            <img src="${photo.data}" alt="Photo" class="photo-preview ${photo.team}" onclick="viewPhoto('${item.id}', '${photo.id}')" />
+                            <img src="${photo.data}" alt="Photo" class="photo-preview ${photo.team}" onclick="viewPhoto('${item.id}', '${photo.id}')" onerror="handleImageError('${photo.id}', '${item.id}', '${photo.team}')" />
                         `).join('')}
                         ${huntActive ? `
                             <div>
@@ -1610,7 +1615,7 @@
                     if (momPhotos.length > 0) {
                         html += `
                             <div class="photo-item-group-photo mom">
-                                <img src="${momPhotos[0].data}" alt="${item.title} - Mom Team" />
+                                <img src="${momPhotos[0].data}" alt="${item.title} - Mom Team" onerror="handleImageError('${momPhotos[0].id}', '${item.id}', 'mom')" />
                                 <div class="photo-item-group-photo-label mom">👩 Mom Team</div>
                             </div>
                         `;
@@ -1626,7 +1631,7 @@
                     if (dadPhotos.length > 0) {
                         html += `
                             <div class="photo-item-group-photo dad">
-                                <img src="${dadPhotos[0].data}" alt="${item.title} - Dad Team" />
+                                <img src="${dadPhotos[0].data}" alt="${item.title} - Dad Team" onerror="handleImageError('${dadPhotos[0].id}', '${item.id}', 'dad')" />
                                 <div class="photo-item-group-photo-label dad">👨 Dad Team</div>
                             </div>
                         `;
@@ -1660,7 +1665,7 @@
                                         <div class="photo-item-title">${item.title}</div>
                                         <div class="photo-item-team ${photo.team}">${photo.team === 'mom' ? '👩 Mom Team' : '👨 Dad Team'}</div>
                                     </div>
-                                    <img src="${photo.data}" alt="${item.title}" class="photo-item-image" />
+                                    <img src="${photo.data}" alt="${item.title}" class="photo-item-image" onerror="handleImageError('${photo.id}', '${item.id}', '${photo.team}')" />
                                 </div>
                             `;
                         });
@@ -1675,6 +1680,21 @@
         function viewPhoto(itemId, photoId) {
             // Could add a modal here to view full-size photo
             console.log('View photo:', itemId, photoId);
+        }
+
+        // Handle broken image - remove from cache and re-render
+        async function handleImageError(photoId, itemId, team) {
+            console.log('Image failed to load, removing from cache:', photoId);
+            const photos = getPhotos();
+            const filteredPhotos = photos.filter(p => p.id !== photoId);
+            await savePhotos(filteredPhotos);
+            
+            // Re-render to update display
+            renderItems();
+            if (endTime && endTime <= new Date()) {
+                renderGallery();
+            }
+            updateScores();
         }
 
         // Clear hunt - removes all data
