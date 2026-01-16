@@ -1762,9 +1762,9 @@
             updateScores();
         }
 
-        // Clear hunt - removes all data
+        // Clear hunt - archives photos and resets timer
         async function clearHunt() {
-            if (!confirm('Are you sure you want to clear the hunt? This will delete all photos and reset the timer. This cannot be undone!')) {
+            if (!confirm('Are you sure you want to clear the hunt? Photos will be archived and the timer will be reset.')) {
                 return;
             }
 
@@ -1778,11 +1778,14 @@
                 endTimeSyncInterval = null;
             }
 
+            // Save endTime for archive folder name before clearing
+            const huntEndTime = endTime;
+            
             // Clear end time - do this first to prevent sync from restoring it
             endTime = null;
             localStorage.removeItem('huntEndTime');
 
-            // Clear photos from localStorage
+            // Clear photos from localStorage (they're archived in Firebase)
             localStorage.removeItem('huntPhotos');
 
             // Clear data from Firebase Storage
@@ -1822,13 +1825,50 @@
                         }
                     }
                     
-                    // Clear photos
-                    const photosRef = firebaseStorage.ref().child('photos');
-                    const listResult = await photosRef.listAll();
-                    
-                    // Delete all files in the photos folder
-                    const deletePromises = listResult.items.map(item => item.delete());
-                    await Promise.all(deletePromises);
+                    // Archive photos instead of deleting them
+                    if (huntEndTime) {
+                        // Create archive folder name from hunt end time
+                        const archiveFolderName = huntEndTime.toISOString().replace(/[:.]/g, '-').replace('T', '_').substring(0, 19);
+                        const archiveRef = firebaseStorage.ref().child(`archived/${archiveFolderName}`);
+                        
+                        const photosRef = firebaseStorage.ref().child('photos');
+                        const listResult = await photosRef.listAll();
+                        
+                        // Move all files (photos and metadata) to archive folder
+                        const movePromises = listResult.items.map(async (item) => {
+                            try {
+                                // Get the file name
+                                const fileName = item.name;
+                                // Copy to archive folder
+                                const archiveFileRef = archiveRef.child(fileName);
+                                
+                                // Download the file
+                                const url = await item.getDownloadURL();
+                                const response = await fetch(url);
+                                const blob = await response.blob();
+                                
+                                // Upload to archive folder
+                                await archiveFileRef.put(blob);
+                                
+                                // Delete from original location
+                                await item.delete();
+                                
+                                console.log(`Archived ${fileName} to archived/${archiveFolderName}`);
+                            } catch (error) {
+                                console.error(`Error archiving ${item.name}:`, error);
+                            }
+                        });
+                        
+                        await Promise.all(movePromises);
+                        console.log(`Archived all photos and metadata to archived/${archiveFolderName}`);
+                    } else {
+                        // If no endTime, just delete photos (shouldn't happen, but safety fallback)
+                        const photosRef = firebaseStorage.ref().child('photos');
+                        const listResult = await photosRef.listAll();
+                        const deletePromises = listResult.items.map(item => item.delete());
+                        await Promise.all(deletePromises);
+                        console.log('Cleared photos (no endTime to create archive)');
+                    }
                     
                     console.log('Cleared data from Firebase Storage');
                 } catch (error) {
