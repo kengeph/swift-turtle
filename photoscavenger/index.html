@@ -1235,7 +1235,7 @@
                         `).join('')}
                         ${huntActive ? `
                             <div>
-                                <input type="file" accept="image/*" class="file-input" id="file-${item.id}" onchange="uploadPhoto('${item.id}', this)" />
+                                <input type="file" accept="image/*" capture="environment" class="file-input" id="file-${item.id}" onchange="uploadPhoto('${item.id}', this)" />
                                 <button class="upload-btn" onclick="document.getElementById('file-${item.id}').click()">📷 Add Photo</button>
                             </div>
                         ` : ''}
@@ -1266,7 +1266,7 @@
                             `).join('')}
                             ${huntActive ? `
                                 <div>
-                                    <input type="file" accept="image/*" class="file-input" id="file-${item.id}" onchange="uploadPhoto('${item.id}', this)" />
+                                    <input type="file" accept="image/*" capture="environment" class="file-input" id="file-${item.id}" onchange="uploadPhoto('${item.id}', this)" />
                                     <button class="upload-btn" onclick="document.getElementById('file-${item.id}').click()">${buttonText}</button>
                                 </div>
                             ` : ''}
@@ -1317,6 +1317,60 @@
             document.body.className = ''; // Reset to neutral theme
         }
 
+        // Convert image file to JPEG for compatibility (handles HEIF/HEIC)
+        async function convertToJpeg(file) {
+            // Check if file is HEIF/HEIC or needs conversion
+            const isHeif = file.type === 'image/heif' || 
+                          file.type === 'image/heic' ||
+                          file.name.toLowerCase().endsWith('.heif') ||
+                          file.name.toLowerCase().endsWith('.heic');
+            
+            // If not HEIF and already JPEG/PNG, return as-is
+            if (!isHeif && (file.type === 'image/jpeg' || file.type === 'image/png')) {
+                return file;
+            }
+            
+            // Convert to JPEG using canvas
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        // Create canvas and draw image
+                        const canvas = document.createElement('canvas');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0);
+                        
+                        // Convert to JPEG blob
+                        canvas.toBlob(function(blob) {
+                            if (blob) {
+                                // Create a new File object with JPEG extension
+                                const jpegFile = new File([blob], file.name.replace(/\.[^/.]+$/, '.jpg'), {
+                                    type: 'image/jpeg',
+                                    lastModified: Date.now()
+                                });
+                                resolve(jpegFile);
+                            } else {
+                                reject(new Error('Failed to convert image to JPEG'));
+                            }
+                        }, 'image/jpeg', 0.92); // 0.92 quality
+                    };
+                    img.onerror = function() {
+                        // If image can't be loaded, try to use original file
+                        console.warn('Could not load image for conversion, using original file');
+                        resolve(file);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.onerror = function() {
+                    reject(new Error('Failed to read file'));
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
         // Upload photo
         async function uploadPhoto(itemId, input) {
             const file = input.files[0];
@@ -1324,12 +1378,22 @@
 
             const photoId = Date.now().toString();
             const timestamp = new Date().toISOString();
+            
+            // Convert HEIF/HEIC to JPEG for compatibility
+            let fileToUpload = file;
+            try {
+                fileToUpload = await convertToJpeg(file);
+            } catch (error) {
+                console.error('Error converting image:', error);
+                alert('Error processing image. Please try again or use a different format.');
+                return;
+            }
 
             if (useFirebase && firebaseStorage) {
                 // Upload to Firebase Storage
                 try {
                     const storageRef = firebaseStorage.ref();
-                    const photoRef = storageRef.child(`photos/${photoId}_${file.name}`);
+                    const photoRef = storageRef.child(`photos/${photoId}_${fileToUpload.name}`);
                     
                     // Show upload progress
                     const uploadBtn = input.nextElementSibling;
@@ -1337,7 +1401,7 @@
                     uploadBtn.textContent = '⏳ Uploading...';
                     uploadBtn.disabled = true;
 
-                    const snapshot = await photoRef.put(file);
+                    const snapshot = await photoRef.put(fileToUpload);
                     const downloadURL = await snapshot.ref.getDownloadURL();
 
                     const photo = {
@@ -1347,7 +1411,7 @@
                         url: downloadURL, // Store URL instead of base64
                         data: downloadURL, // For compatibility
                         timestamp: timestamp,
-                        filename: file.name
+                        filename: fileToUpload.name
                     };
 
                     const photos = getPhotos();
@@ -1387,7 +1451,7 @@
                     renderItems();
                     updateScores();
                 };
-                reader.readAsDataURL(file);
+                reader.readAsDataURL(fileToUpload);
             }
         }
 
