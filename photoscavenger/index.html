@@ -1317,20 +1317,16 @@
             document.body.className = ''; // Reset to neutral theme
         }
 
-        // Convert image file to JPEG for compatibility (handles HEIF/HEIC)
+        // Convert image file to JPEG for compatibility (handles HEIF/HEIC and ensures JPEG output)
         async function convertToJpeg(file) {
-            // Check if file is HEIF/HEIC or needs conversion
-            const isHeif = file.type === 'image/heif' || 
-                          file.type === 'image/heic' ||
-                          file.name.toLowerCase().endsWith('.heif') ||
-                          file.name.toLowerCase().endsWith('.heic');
-            
-            // If not HEIF and already JPEG/PNG, return as-is
-            if (!isHeif && (file.type === 'image/jpeg' || file.type === 'image/png')) {
+            // Check if already JPEG - if so, return as-is (no need to re-encode)
+            if (file.type === 'image/jpeg' || file.type === 'image/jpg') {
+                console.log('File is already JPEG, using as-is');
                 return file;
             }
             
-            // Convert to JPEG using canvas
+            // Always convert other formats to JPEG for maximum compatibility
+            // This ensures HEIF/HEIC files work on all platforms
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.onload = function(e) {
@@ -1347,20 +1343,21 @@
                         canvas.toBlob(function(blob) {
                             if (blob) {
                                 // Create a new File object with JPEG extension
-                                const jpegFile = new File([blob], file.name.replace(/\.[^/.]+$/, '.jpg'), {
+                                const jpegFile = new File([blob], file.name.replace(/\.[^/.]+$/, '') + '.jpg', {
                                     type: 'image/jpeg',
                                     lastModified: Date.now()
                                 });
+                                console.log('Converted image to JPEG:', jpegFile.name, jpegFile.type);
                                 resolve(jpegFile);
                             } else {
                                 reject(new Error('Failed to convert image to JPEG'));
                             }
                         }, 'image/jpeg', 0.92); // 0.92 quality
                     };
-                    img.onerror = function() {
-                        // If image can't be loaded, try to use original file
-                        console.warn('Could not load image for conversion, using original file');
-                        resolve(file);
+                    img.onerror = function(error) {
+                        // If image can't be loaded (e.g., HEIF that browser can't decode)
+                        console.error('Could not load image for conversion. File type:', file.type, 'File name:', file.name);
+                        reject(new Error('Browser cannot read this image format (HEIF/HEIC not supported). Please take a new photo with the camera or select a JPEG/PNG image.'));
                     };
                     img.src = e.target.result;
                 };
@@ -1379,13 +1376,17 @@
             const photoId = Date.now().toString();
             const timestamp = new Date().toISOString();
             
-            // Convert HEIF/HEIC to JPEG for compatibility
-            let fileToUpload = file;
+            // Always convert to JPEG for compatibility (handles HEIF/HEIC and ensures cross-platform compatibility)
+            let fileToUpload;
             try {
+                console.log('Converting image:', file.name, file.type);
                 fileToUpload = await convertToJpeg(file);
+                console.log('Conversion successful:', fileToUpload.name, fileToUpload.type);
             } catch (error) {
                 console.error('Error converting image:', error);
-                alert('Error processing image. Please try again or use a different format.');
+                alert('This image format cannot be processed. Please take a new photo with the camera or select a JPEG/PNG image.');
+                // Reset the input
+                input.value = '';
                 return;
             }
 
