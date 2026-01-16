@@ -74,13 +74,14 @@
             font-size: 0.85em;
             margin-top: 10px;
             padding: 5px 10px;
-            background: rgba(255,255,255,0.2);
             border-radius: 15px;
             display: inline-block;
         }
 
-        .storage-status.cloud {
-            background: rgba(76, 175, 80, 0.3);
+        .storage-status.error {
+            background: rgba(220, 53, 69, 0.3);
+            color: white;
+            border: 1px solid rgba(220, 53, 69, 0.5);
         }
 
         .team-selector-section {
@@ -94,6 +95,47 @@
             color: white;
             margin-bottom: 10px;
             font-size: 1em;
+        }
+
+        .team-title-display {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .team-title-display.show {
+            display: flex;
+        }
+
+        .team-title-display h2 {
+            color: white;
+            font-size: 1.8em;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .team-title-display.mom h2 {
+            color: #e91e63;
+        }
+
+        .team-title-display.dad h2 {
+            color: #2196f3;
+        }
+
+        .switch-team-btn {
+            padding: 6px 15px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+        }
+
+        .switch-team-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
 
         .team-selector-global {
@@ -519,6 +561,31 @@
             color: #333;
         }
 
+        .winner-celebration {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 2em;
+            font-weight: bold;
+            min-height: 50px;
+        }
+
+        .winner-celebration.mom {
+            color: #e91e63;
+        }
+
+        .winner-celebration.dad {
+            color: #2196f3;
+        }
+
+        .milkshake-message {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 1.3em;
+            font-weight: 600;
+            min-height: 40px;
+            color: #666;
+        }
+
         .photos-gallery {
             padding: 20px;
             display: none;
@@ -547,6 +614,73 @@
             padding: 15px;
             background: #f8f9fa;
             border-radius: 10px;
+        }
+
+        .photo-item-group {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .photo-item-group-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .photo-item-group-photos {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .photo-item-group-photo {
+            flex: 1;
+            min-width: 300px;
+            max-width: 500px;
+        }
+
+        .photo-item-group-photo img {
+            width: 100%;
+            border-radius: 8px;
+            border: 3px solid;
+        }
+
+        .photo-item-group-photo.mom img {
+            border-color: #e91e63;
+        }
+
+        .photo-item-group-photo.dad img {
+            border-color: #2196f3;
+        }
+
+        .photo-item-group-photo-label {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: 600;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .photo-item-group-photo-label.mom {
+            background: #e91e63;
+            color: white;
+        }
+
+        .photo-item-group-photo-label.dad {
+            background: #2196f3;
+            color: white;
+        }
+
+        .photo-item-group-no-photos {
+            text-align: center;
+            color: #999;
+            font-style: italic;
+            padding: 20px;
         }
 
         .photo-item-header {
@@ -601,15 +735,18 @@
     <div class="container">
         <div class="header">
             <h1>📸 Photo Scavenger Hunt 📸</h1>
-            <p>Hamilton Place Area - Chattanooga, TN</p>
-            <div class="storage-status" id="storageStatus">💾 Local Storage</div>
+            <p id="instructionsText">Go around and take photos with as many of the below items as you can. Each photo should be a selfie with the whole team and the item in the list. Enter the time below that everyone should be done by. At that time everybody will meet up at Red Robins. Loser buys everyone milkshakes!</p>
+            <div class="storage-status error" id="storageStatus" style="display: none;"></div>
         </div>
 
         <div class="team-selector-section">
-            <h3>Choose Your Team:</h3>
-            <div class="team-selector-global">
+            <div class="team-selector-global" id="teamSelectorButtons">
                 <button class="team-btn-global mom" id="teamBtnMom" onclick="selectTeamGlobal('mom')">👩 Mom Team</button>
                 <button class="team-btn-global dad" id="teamBtnDad" onclick="selectTeamGlobal('dad')">👨 Dad Team</button>
+            </div>
+            <div class="team-title-display" id="teamTitleDisplay">
+                <h2 id="teamTitleText"></h2>
+                <button class="switch-team-btn" onclick="showTeamSelector()">Switch Team</button>
             </div>
         </div>
 
@@ -654,6 +791,8 @@
                     <div>photos</div>
                 </div>
             </div>
+            <div class="winner-celebration" id="winnerCelebration"></div>
+            <div class="milkshake-message" id="milkshakeMessage"></div>
         </div>
 
         <div class="photos-gallery" id="photosGallery">
@@ -700,13 +839,14 @@
                     firebase.initializeApp(firebaseConfig);
                     firebaseStorage = firebase.storage();
                     useFirebase = true;
-                    document.getElementById('storageStatus').textContent = '☁️ Cloud Storage (Firebase)';
-                    document.getElementById('storageStatus').classList.add('cloud');
+                    // Only show status if there's an error
+                    document.getElementById('storageStatus').style.display = 'none';
                     console.log('Firebase Storage initialized successfully');
                 } catch (error) {
                     console.error('Firebase initialization error:', error);
                     useFirebase = false;
-                    document.getElementById('storageStatus').textContent = '💾 Local Storage (Firebase Error)';
+                    document.getElementById('storageStatus').textContent = '⚠️ Cloud Storage Error - Using Local Storage';
+                    document.getElementById('storageStatus').style.display = 'inline-block';
                 }
             } else {
                 if (typeof firebaseConfig === 'undefined') {
@@ -719,7 +859,8 @@
                     console.warn('Firebase config not filled in - using template values');
                 }
                 console.log('Using localStorage for photo storage');
-                document.getElementById('storageStatus').textContent = '💾 Local Storage';
+                // Only show status if there's an error
+                document.getElementById('storageStatus').style.display = 'none';
             }
         }
 
@@ -767,6 +908,7 @@
             
             renderItems();
             checkHuntStatus();
+            updateInstructions();
         }
 
         // Sync end time from Firebase (for multi-device sync)
@@ -906,7 +1048,10 @@
             if (savedTeam) {
                 selectTeamGlobal(savedTeam, false);
             } else {
-                selectTeamGlobal('mom', false);
+                // Show buttons if no team selected yet
+                document.getElementById('teamSelectorButtons').style.display = 'flex';
+                document.getElementById('teamTitleDisplay').classList.remove('show');
+                document.body.className = '';
             }
         }
 
@@ -962,6 +1107,9 @@
             document.getElementById('timeInputGroup').style.display = 'none';
             startCountdown();
             
+            // Update instructions for active hunt
+            updateInstructions();
+            
             // Re-render items to show upload buttons
             renderItems();
         }
@@ -1016,8 +1164,22 @@
             document.getElementById('countdown').classList.remove('show');
             document.getElementById('scoresSection').classList.add('show');
             document.getElementById('photosGallery').classList.add('show');
+            // Hide the scavenger list when hunt is done
+            document.getElementById('scavengerList').style.display = 'none';
             updateScores();
             renderGallery();
+        }
+
+        // Update instructions text based on hunt status
+        function updateInstructions() {
+            const instructionsEl = document.getElementById('instructionsText');
+            const huntActive = endTime && endTime > new Date();
+            
+            if (huntActive) {
+                instructionsEl.textContent = 'The hunt is on! Take selfies with your whole team and the items below. Meet at Red Robins when time is up!';
+            } else {
+                instructionsEl.textContent = 'Go around and take photos with as many of the below items as you can. Each photo should be a selfie with the whole team and the item in the list. Enter the time below that everyone should be done by. At that time everybody will meet up at Red Robins. Loser buys everyone milkshakes!';
+            }
         }
 
         // Check hunt status
@@ -1025,6 +1187,7 @@
             if (endTime && endTime <= new Date()) {
                 showHuntEnded();
             }
+            updateInstructions();
         }
 
         // Render items
@@ -1111,15 +1274,18 @@
         function selectTeamGlobal(team, save = true) {
             selectedTeam = team;
             
-            // Update button states
-            document.getElementById('teamBtnMom').classList.remove('active');
-            document.getElementById('teamBtnDad').classList.remove('active');
+            // Hide selector buttons and show title
+            document.getElementById('teamSelectorButtons').style.display = 'none';
+            const titleDisplay = document.getElementById('teamTitleDisplay');
+            titleDisplay.classList.add('show');
+            titleDisplay.classList.remove('mom', 'dad');
+            titleDisplay.classList.add(team);
             
             if (team === 'mom') {
-                document.getElementById('teamBtnMom').classList.add('active');
+                document.getElementById('teamTitleText').textContent = '👩 Mom Team';
                 document.body.className = 'theme-mom';
             } else {
-                document.getElementById('teamBtnDad').classList.add('active');
+                document.getElementById('teamTitleText').textContent = '👨 Dad Team';
                 document.body.className = 'theme-dad';
             }
             
@@ -1133,6 +1299,13 @@
             if (endTime && endTime <= new Date()) {
                 renderGallery();
             }
+        }
+
+        // Show team selector buttons again
+        function showTeamSelector() {
+            document.getElementById('teamSelectorButtons').style.display = 'flex';
+            document.getElementById('teamTitleDisplay').classList.remove('show');
+            document.body.className = ''; // Reset to neutral theme
         }
 
         // Upload photo
@@ -1376,6 +1549,28 @@
             
             document.getElementById('momScore').textContent = momCount;
             document.getElementById('dadScore').textContent = dadCount;
+            
+            // Show winner celebration and milkshake message
+            const winnerEl = document.getElementById('winnerCelebration');
+            const milkshakeEl = document.getElementById('milkshakeMessage');
+            
+            if (momCount > dadCount) {
+                winnerEl.textContent = '🎉 Mom Team Wins! 🎉';
+                winnerEl.className = 'winner-celebration mom';
+                milkshakeEl.textContent = '👨 Dad Team, time to buy the milkshakes!';
+            } else if (dadCount > momCount) {
+                winnerEl.textContent = '🎉 Dad Team Wins! 🎉';
+                winnerEl.className = 'winner-celebration dad';
+                milkshakeEl.textContent = '👩 Mom Team, time to buy the milkshakes!';
+            } else if (momCount === dadCount && momCount > 0) {
+                winnerEl.textContent = '🤝 It\'s a Tie! 🤝';
+                winnerEl.className = 'winner-celebration';
+                milkshakeEl.textContent = 'Everyone buys their own milkshakes!';
+            } else {
+                winnerEl.textContent = '';
+                winnerEl.className = 'winner-celebration';
+                milkshakeEl.textContent = '';
+            }
         }
 
         // Render gallery
@@ -1387,35 +1582,89 @@
             // During hunt, only show current team's photos
             const photos = huntActive ? allPhotos.filter(p => p.team === selectedTeam) : allPhotos;
             
-            if (photos.length === 0) {
-                const message = huntActive 
-                    ? '<h2>Your Photos</h2><p>No photos uploaded yet.</p>'
-                    : '<h2>All Photos</h2><p>No photos uploaded yet.</p>';
-                container.innerHTML = message;
+            if (huntActive && photos.length === 0) {
+                container.innerHTML = '<h2>Your Photos</h2><p>No photos uploaded yet.</p>';
                 return;
             }
 
-            const title = huntActive ? '<h2>Your Photos</h2>' : '<h2>All Photos</h2>';
-            let html = title;
-            
-            items.forEach(item => {
-                const itemPhotos = photos.filter(p => p.itemId === item.id);
-                if (itemPhotos.length > 0) {
-                    itemPhotos.forEach(photo => {
+            // After hunt, show all items with photos side by side
+            if (!huntActive) {
+                let html = '<h2>Results</h2>';
+                
+                items.forEach(item => {
+                    const itemPhotos = photos.filter(p => p.itemId === item.id);
+                    const momPhotos = itemPhotos.filter(p => p.team === 'mom');
+                    const dadPhotos = itemPhotos.filter(p => p.team === 'dad');
+                    
+                    html += `
+                        <div class="photo-item-group">
+                            <div class="photo-item-group-title">${item.title}</div>
+                            <div class="photo-item-group-photos">
+                    `;
+                    
+                    // Show mom team photo if exists
+                    if (momPhotos.length > 0) {
                         html += `
-                            <div class="photo-item">
-                                <div class="photo-item-header">
-                                    <div class="photo-item-title">${item.title}</div>
-                                    <div class="photo-item-team ${photo.team}">${photo.team === 'mom' ? '👩 Mom Team' : '👨 Dad Team'}</div>
-                                </div>
-                                <img src="${photo.data}" alt="${item.title}" class="photo-item-image" />
+                            <div class="photo-item-group-photo mom">
+                                <img src="${momPhotos[0].data}" alt="${item.title} - Mom Team" />
+                                <div class="photo-item-group-photo-label mom">👩 Mom Team</div>
                             </div>
                         `;
-                    });
-                }
-            });
-            
-            container.innerHTML = html;
+                    } else {
+                        html += `
+                            <div class="photo-item-group-photo">
+                                <div class="photo-item-group-no-photos">👩 Mom Team - No photo</div>
+                            </div>
+                        `;
+                    }
+                    
+                    // Show dad team photo if exists
+                    if (dadPhotos.length > 0) {
+                        html += `
+                            <div class="photo-item-group-photo dad">
+                                <img src="${dadPhotos[0].data}" alt="${item.title} - Dad Team" />
+                                <div class="photo-item-group-photo-label dad">👨 Dad Team</div>
+                            </div>
+                        `;
+                    } else {
+                        html += `
+                            <div class="photo-item-group-photo">
+                                <div class="photo-item-group-no-photos">👨 Dad Team - No photo</div>
+                            </div>
+                        `;
+                    }
+                    
+                    html += `
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = html;
+            } else {
+                // During hunt, show simple list
+                const title = '<h2>Your Photos</h2>';
+                let html = title;
+                
+                items.forEach(item => {
+                    const itemPhotos = photos.filter(p => p.itemId === item.id);
+                    if (itemPhotos.length > 0) {
+                        itemPhotos.forEach(photo => {
+                            html += `
+                                <div class="photo-item">
+                                    <div class="photo-item-header">
+                                        <div class="photo-item-title">${item.title}</div>
+                                        <div class="photo-item-team ${photo.team}">${photo.team === 'mom' ? '👩 Mom Team' : '👨 Dad Team'}</div>
+                                    </div>
+                                    <img src="${photo.data}" alt="${item.title}" class="photo-item-image" />
+                                </div>
+                            `;
+                        });
+                    }
+                });
+                
+                container.innerHTML = html;
+            }
         }
 
         // View photo (placeholder for future modal)
@@ -1504,7 +1753,11 @@
             document.getElementById('huntEnded').classList.remove('show');
             document.getElementById('scoresSection').classList.remove('show');
             document.getElementById('photosGallery').classList.remove('show');
+            document.getElementById('scavengerList').style.display = 'block';
             document.getElementById('endTime').value = '';
+
+            // Reset instructions
+            updateInstructions();
 
             // Re-render items
             renderItems();
