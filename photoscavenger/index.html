@@ -1184,8 +1184,11 @@
         function updateInstructions() {
             const instructionsEl = document.getElementById('instructionsText');
             const huntActive = endTime && endTime > new Date();
+            const huntEnded = endTime && endTime <= new Date();
             
-            if (huntActive) {
+            if (huntEnded) {
+                instructionsEl.textContent = '🎉 Hunt is complete! Scroll down to see the results and find out who won! 🎉';
+            } else if (huntActive) {
                 instructionsEl.textContent = 'The hunt is on! Take selfies with your whole team and the items below. Meet at Red Robins when time is up!';
             } else {
                 instructionsEl.textContent = 'Go around and take photos with as many of the below items as you can. Each photo should be a selfie with the whole team and the item in the list. Enter the time below that everyone should be done by. At that time everybody will meet up at Red Robins. Loser buys everyone milkshakes!';
