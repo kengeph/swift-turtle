@@ -1024,7 +1024,15 @@
                     updateInstructions();
                 }
             } catch (error) {
-                // File doesn't exist or error
+                // Check if it's a 404 (file doesn't exist) - this is expected and normal
+                if (error.code === 'storage/object-not-found' || 
+                    error.code === 'storage/404' ||
+                    (error.message && (error.message.includes('404') || error.message.includes('object-not-found')))) {
+                    // Silently handle - this is expected when no hunt has been started
+                    return;
+                }
+                
+                // Only log actual errors (not expected 404s)
                 console.log('Error loading end time from Firebase:', error);
                 console.log('Error details:', {
                     message: error.message,
@@ -1036,15 +1044,6 @@
                 if (error.message && error.message.includes('CORS')) {
                     console.error('CORS Error: Firebase Storage needs CORS configuration for swift-turtle.com');
                     console.error('See FIREBASE-CORS-SETUP.md for instructions');
-                }
-                
-                // Check if it's a 404 (file doesn't exist)
-                if (error.code === 'storage/object-not-found' || 
-                    error.code === 'storage/404' ||
-                    (error.message && (error.message.includes('404') || error.message.includes('object-not-found')))) {
-                    console.log('huntEndTime.json does not exist in Firebase Storage yet - this is normal if no hunt has been started');
-                    // Don't show error, just log it - this is expected on first load
-                    return;
                 }
                 
                 // If we don't have a local end time either, show the input
@@ -1526,8 +1525,15 @@
                 savePhotosLocal(mergedPhotos);
                 return true;
             } catch (error) {
-                // Metadata file doesn't exist yet, that's okay
-                console.log('No existing photos in Firebase, starting fresh');
+                // Metadata file doesn't exist yet, that's okay - silently handle expected 404s
+                if (error.code === 'storage/object-not-found' || 
+                    error.code === 'storage/404' ||
+                    (error.message && (error.message.includes('404') || error.message.includes('object-not-found')))) {
+                    // Expected - no photos exist yet
+                    return false;
+                }
+                // Log actual errors
+                console.log('Error loading photos from Firebase:', error);
                 return false;
             }
         }
