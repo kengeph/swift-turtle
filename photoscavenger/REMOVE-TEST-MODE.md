@@ -14,19 +14,23 @@ To take your Firebase Storage out of test mode and make it permanently accessibl
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    // Allow public read access
     match /{allPaths=**} {
+      // Allow public read access
       allow read: if true;
-      // Allow write access (create, update, delete) with file size limit (5MB max)
+      // Allow write access (create, update) with file size limit (5MB max)
       allow write: if request.resource.size < 5 * 1024 * 1024;
-      // Explicitly allow delete operations
+      // CRITICAL: Explicitly allow delete operations (required for clearing hunt)
       allow delete: if true;
     }
   }
 }
 ```
 
+**Note:** The `allow write` rule does NOT automatically include delete operations in Firebase Storage. You MUST explicitly add `allow delete: if true;` or the app will get 403 Forbidden errors when trying to delete files.
+
 6. Click **Publish** to save the rules
+
+**Verify:** After publishing, try clearing a hunt again. The delete operations should now work without 403 errors.
 
 **Important:** These rules allow public read/write access. If you want more security, you can restrict write access to authenticated users only:
 
