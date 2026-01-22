@@ -1566,7 +1566,15 @@
                     updateScores();
                 }
             } catch (error) {
-                // File doesn't exist or error, that's okay
+                // File doesn't exist or error - silently handle expected 404s
+                if (error.code === 'storage/object-not-found' || 
+                    error.code === 'storage/404' ||
+                    (error.message && (error.message.includes('404') || error.message.includes('object-not-found')))) {
+                    // Expected - no photos exist yet, don't log
+                    return;
+                }
+                // Only log actual errors
+                console.log('Error syncing photos from Firebase:', error);
             }
         }
 
