@@ -1843,9 +1843,8 @@
                         
                         // Move all files (photos and metadata) to archive folder
                         const movePromises = listResult.items.map(async (item) => {
+                            const fileName = item.name;
                             try {
-                                // Get the file name
-                                const fileName = item.name;
                                 // Copy to archive folder
                                 const archiveFileRef = archiveRef.child(fileName);
                                 
@@ -1856,17 +1855,53 @@
                                 
                                 // Upload to archive folder
                                 await archiveFileRef.put(blob);
+                                console.log(`Uploaded ${fileName} to archive`);
                                 
-                                // Delete from original location
-                                await item.delete();
+                                // Delete from original location - do this separately with better error handling
+                                try {
+                                    await item.delete();
+                                    console.log(`Deleted ${fileName} from original location`);
+                                } catch (deleteError) {
+                                    console.error(`Failed to delete ${fileName} from original location:`, deleteError);
+                                    // Try to delete using the full path as fallback
+                                    try {
+                                        const originalRef = photosRef.child(fileName);
+                                        await originalRef.delete();
+                                        console.log(`Deleted ${fileName} using fallback method`);
+                                    } catch (fallbackError) {
+                                        console.error(`Fallback delete also failed for ${fileName}:`, fallbackError);
+                                        throw deleteError; // Re-throw to be caught by outer catch
+                                    }
+                                }
                                 
-                                console.log(`Archived ${fileName} to archived/${archiveFolderName}`);
+                                console.log(`Successfully archived ${fileName} to archived/${archiveFolderName}`);
                             } catch (error) {
-                                console.error(`Error archiving ${item.name}:`, error);
+                                console.error(`Error archiving ${fileName}:`, error);
+                                // Don't throw - continue with other files even if one fails
                             }
                         });
                         
                         await Promise.all(movePromises);
+                        
+                        // Double-check: try to delete any remaining files
+                        try {
+                            const remainingList = await photosRef.listAll();
+                            if (remainingList.items.length > 0) {
+                                console.log(`Found ${remainingList.items.length} remaining files, attempting cleanup...`);
+                                const cleanupPromises = remainingList.items.map(async (item) => {
+                                    try {
+                                        await item.delete();
+                                        console.log(`Cleaned up remaining file: ${item.name}`);
+                                    } catch (cleanupError) {
+                                        console.error(`Failed to cleanup ${item.name}:`, cleanupError);
+                                    }
+                                });
+                                await Promise.all(cleanupPromises);
+                            }
+                        } catch (cleanupError) {
+                            console.error('Error during cleanup:', cleanupError);
+                        }
+                        
                         console.log(`Archived all photos and metadata to archived/${archiveFolderName}`);
                     } else {
                         // If no endTime, just delete photos (shouldn't happen, but safety fallback)
