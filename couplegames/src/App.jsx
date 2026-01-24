@@ -464,9 +464,11 @@ function App() {
       actualCompletedGames++
     }
   }
+  // Check if current game has a winner (we just completed it but haven't advanced yet)
+  const currentGameJustCompleted = winners[currentGame + 1] !== undefined
   // Show warning if score doesn't match actual completed games
-  // The score should always equal the number of completed games (one point per game)
-  const scoreMismatch = totalScore !== actualCompletedGames
+  // Exception: during transition (just completed current game), allow score to be actualCompletedGames + 1
+  const scoreMismatch = totalScore !== actualCompletedGames && !(currentGameJustCompleted && totalScore === actualCompletedGames + 1)
   const gramMasterRound = gramMasterRounds.player1.length + gramMasterRounds.player2.length + 1
 
   // Get description with dynamic content
