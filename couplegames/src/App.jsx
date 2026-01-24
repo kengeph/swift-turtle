@@ -190,8 +190,9 @@ function App() {
       }
     } else if (currentGame > 0) {
       // From a game, go back one
-      const gameId = currentGame + 1 // Convert 0-based index to 1-based game ID
+      // First, recalculate scores from scratch based on remaining winners
       const newWinners = { ...winners }
+      const targetGameId = currentGame + 1 // Current game ID
       
       // Handle Gram Master special case
       if (currentGame === 1) {
@@ -201,7 +202,7 @@ function App() {
           const newRounds = { ...gramMasterRounds }
           
           // If all 3 rounds are complete, we need to undo the overall score first
-          if (totalRounds === 3 && winners[gameId]) {
+          if (totalRounds === 3 && winners[targetGameId]) {
             // Determine who won overall and undo that score
             const player1Wins = gramMasterRounds.player1.length
             const player2Wins = gramMasterRounds.player2.length
@@ -212,9 +213,8 @@ function App() {
               setScores(prev => ({ ...prev, player2: Math.max(0, prev.player2 - 1) }))
             }
             // Remove the overall winner entry
-            const updatedWinners = { ...winners }
-            delete updatedWinners[gameId]
-            setWinners(updatedWinners)
+            delete newWinners[targetGameId]
+            setWinners(newWinners)
           }
           
           // Remove the last round - heuristic: remove from the array with more entries
@@ -241,18 +241,25 @@ function App() {
           }
         }
       } else {
-        // Normal game - remove winner and adjust score
-        if (newWinners[gameId]) {
-          const removedWinner = newWinners[gameId]
-          delete newWinners[gameId]
-          setWinners(newWinners)
-          // Adjust scores
-          if (removedWinner === 'player1') {
-            setScores(prev => ({ ...prev, player1: Math.max(0, prev.player1 - 1) }))
-          } else if (removedWinner === 'player2') {
-            setScores(prev => ({ ...prev, player2: Math.max(0, prev.player2 - 1) }))
+        // Normal game - remove winner for current game and all subsequent games
+        // Remove all winners from current game onwards
+        for (let i = targetGameId; i <= CHALLENGES.length; i++) {
+          if (newWinners[i]) {
+            delete newWinners[i]
           }
         }
+        setWinners(newWinners)
+        
+        // Recalculate scores from scratch
+        let newScores = { player1: 0, player2: 0 }
+        for (let i = 1; i < targetGameId; i++) {
+          if (newWinners[i] === 'player1') {
+            newScores.player1++
+          } else if (newWinners[i] === 'player2') {
+            newScores.player2++
+          }
+        }
+        setScores(newScores)
       }
       
       setCurrentGame(prev => prev - 1)
@@ -498,6 +505,30 @@ function App() {
           </h1>
           <p className="text-slate-300 text-lg leading-relaxed mb-4">{description}</p>
           
+          {/* Gram Master Round Scoreboard */}
+          {currentGame === 1 && (
+            <div className="mt-6 pt-6 border-t border-slate-700">
+              <div className="text-sm text-slate-400 mb-3">Round Scoreboard (Best of 3)</div>
+              <div className="bg-slate-900 rounded-lg p-4 mb-4">
+                <div className="flex justify-between items-center mb-2">
+                  <div className="text-lg font-semibold text-blue-400">Kenny</div>
+                  <div className="text-2xl font-bold text-blue-400">
+                    {gramMasterRounds.player1.length} {gramMasterRounds.player1.length === 1 ? 'round' : 'rounds'}
+                  </div>
+                </div>
+                <div className="flex justify-between items-center">
+                  <div className="text-lg font-semibold text-pink-400">Katie</div>
+                  <div className="text-2xl font-bold text-pink-400">
+                    {gramMasterRounds.player2.length} {gramMasterRounds.player2.length === 1 ? 'round' : 'rounds'}
+                  </div>
+                </div>
+              </div>
+              <div className="text-sm text-slate-400">
+                Round {gramMasterRounds.player1.length + gramMasterRounds.player2.length + 1} of 3
+              </div>
+            </div>
+          )}
+          
           {challenge.hasWordleLink && (
             <div className="mt-4 pt-4 border-t border-slate-700">
               <a
@@ -513,20 +544,39 @@ function App() {
         </div>
 
         {/* Winner Buttons */}
-        <div className="grid grid-cols-2 gap-4">
-          <button
-            onClick={() => handleWinner('player1')}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-lg transition-colors text-xl"
-          >
-            Kenny Won
-          </button>
-          <button
-            onClick={() => handleWinner('player2')}
-            className="bg-pink-600 hover:bg-pink-700 text-white font-semibold py-4 px-6 rounded-lg transition-colors text-xl"
-          >
-            Katie Won
-          </button>
-        </div>
+        {currentGame === 1 ? (
+          // Gram Master: Round winner buttons
+          <div className="grid grid-cols-2 gap-4">
+            <button
+              onClick={() => handleWinner('player1')}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-lg transition-colors text-xl"
+            >
+              Kenny Won This Round
+            </button>
+            <button
+              onClick={() => handleWinner('player2')}
+              className="bg-pink-600 hover:bg-pink-700 text-white font-semibold py-4 px-6 rounded-lg transition-colors text-xl"
+            >
+              Katie Won This Round
+            </button>
+          </div>
+        ) : (
+          // Normal challenge: Overall winner buttons
+          <div className="grid grid-cols-2 gap-4">
+            <button
+              onClick={() => handleWinner('player1')}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-lg transition-colors text-xl"
+            >
+              Kenny Won
+            </button>
+            <button
+              onClick={() => handleWinner('player2')}
+              className="bg-pink-600 hover:bg-pink-700 text-white font-semibold py-4 px-6 rounded-lg transition-colors text-xl"
+            >
+              Katie Won
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )
