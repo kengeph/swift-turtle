@@ -153,44 +153,44 @@ function App() {
     }
   }
 
+  // Helper function to recalculate scores from winners object
+  const recalculateScores = (winnersObj) => {
+    let newScores = { player1: 0, player2: 0 }
+    for (let i = 1; i <= CHALLENGES.length; i++) {
+      if (winnersObj[i] === 'player1') {
+        newScores.player1++
+      } else if (winnersObj[i] === 'player2') {
+        newScores.player2++
+      }
+    }
+    return newScores
+  }
+
   const goBack = () => {
     if (currentGame === -1) {
       // From transition page, go back to game 5
-      setCurrentGame(4)
-      // Remove winner for game 5 if it exists
       const newWinners = { ...winners }
       const gameId = 5 // Game 5 is index 4, but stored as ID 5
       if (newWinners[gameId]) {
-        const removedWinner = newWinners[gameId]
         delete newWinners[gameId]
         setWinners(newWinners)
-        // Adjust scores
-        if (removedWinner === 'player1') {
-          setScores(prev => ({ ...prev, player1: Math.max(0, prev.player1 - 1) }))
-        } else if (removedWinner === 'player2') {
-          setScores(prev => ({ ...prev, player2: Math.max(0, prev.player2 - 1) }))
-        }
+        // Recalculate all scores from scratch
+        setScores(recalculateScores(newWinners))
       }
+      setCurrentGame(4)
     } else if (currentGame === CHALLENGES.length) {
       // From results, go back to last game
-      setCurrentGame(CHALLENGES.length - 1)
-      // Remove winner for last game if it exists
       const newWinners = { ...winners }
       const gameId = CHALLENGES.length
       if (newWinners[gameId]) {
-        const removedWinner = newWinners[gameId]
         delete newWinners[gameId]
         setWinners(newWinners)
-        // Adjust scores
-        if (removedWinner === 'player1') {
-          setScores(prev => ({ ...prev, player1: Math.max(0, prev.player1 - 1) }))
-        } else if (removedWinner === 'player2') {
-          setScores(prev => ({ ...prev, player2: Math.max(0, prev.player2 - 1) }))
-        }
+        // Recalculate all scores from scratch
+        setScores(recalculateScores(newWinners))
       }
+      setCurrentGame(CHALLENGES.length - 1)
     } else if (currentGame > 0) {
       // From a game, go back one
-      // First, recalculate scores from scratch based on remaining winners
       const newWinners = { ...winners }
       const targetGameId = currentGame + 1 // Current game ID
       
@@ -201,20 +201,9 @@ function App() {
         if (totalRounds > 0) {
           const newRounds = { ...gramMasterRounds }
           
-          // If all 3 rounds are complete, we need to undo the overall score first
-          if (totalRounds === 3 && winners[targetGameId]) {
-            // Determine who won overall and undo that score
-            const player1Wins = gramMasterRounds.player1.length
-            const player2Wins = gramMasterRounds.player2.length
-            const overallWinner = player1Wins > player2Wins ? 'player1' : 'player2'
-            if (overallWinner === 'player1') {
-              setScores(prev => ({ ...prev, player1: Math.max(0, prev.player1 - 1) }))
-            } else {
-              setScores(prev => ({ ...prev, player2: Math.max(0, prev.player2 - 1) }))
-            }
-            // Remove the overall winner entry
+          // If all 3 rounds are complete, remove the overall winner entry
+          if (totalRounds === 3 && newWinners[targetGameId]) {
             delete newWinners[targetGameId]
-            setWinners(newWinners)
           }
           
           // Remove the last round - heuristic: remove from the array with more entries
@@ -239,6 +228,10 @@ function App() {
             // Going back to first round, reset weight
             setGramMasterTarget(null)
           }
+          
+          // Recalculate all scores from scratch
+          setWinners(newWinners)
+          setScores(recalculateScores(newWinners))
         }
       } else {
         // Normal game - remove winner for current game and all subsequent games
@@ -250,16 +243,8 @@ function App() {
         }
         setWinners(newWinners)
         
-        // Recalculate scores from scratch
-        let newScores = { player1: 0, player2: 0 }
-        for (let i = 1; i < targetGameId; i++) {
-          if (newWinners[i] === 'player1') {
-            newScores.player1++
-          } else if (newWinners[i] === 'player2') {
-            newScores.player2++
-          }
-        }
-        setScores(newScores)
+        // Recalculate all scores from scratch
+        setScores(recalculateScores(newWinners))
       }
       
       setCurrentGame(prev => prev - 1)
