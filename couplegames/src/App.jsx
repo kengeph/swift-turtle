@@ -464,11 +464,9 @@ function App() {
       actualCompletedGames++
     }
   }
-  // Check if current game has a winner (transition state)
-  const currentGameHasWinner = winners[currentGame + 1] !== undefined
   // Show warning if score doesn't match actual completed games
-  // Exception: if we just completed the current game (transition), allow score to be actualCompletedGames + 1
-  const scoreMismatch = totalScore !== actualCompletedGames && !(currentGameHasWinner && totalScore === actualCompletedGames + 1)
+  // The score should always equal the number of completed games (one point per game)
+  const scoreMismatch = totalScore !== actualCompletedGames
   const gramMasterRound = gramMasterRounds.player1.length + gramMasterRounds.player2.length + 1
 
   // Get description with dynamic content
