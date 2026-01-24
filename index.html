@@ -25,6 +25,18 @@
         .title h1 {
             color: #f8fafc !important;
         }
+        .title img {
+            height: 50px;
+            width: auto;
+        }
+        @media (max-width: 600px) {
+            .title img {
+                height: 35px;
+            }
+            .title h1 {
+                font-size: 1.5em;
+            }
+        }
         h4 {
             color: #cbd5e1;
         }
@@ -137,8 +149,8 @@
     <div class="wrapper">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-xs-12 title" style="display: flex; align-items: center; justify-content: center; gap: 15px;">
-                    <img src="favicon.svg" alt="Swift Turtle Logo" style="height: 50px; width: auto;">
+                <div class="col-xs-12 title" style="display: flex; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                    <img src="favicon.svg" alt="Swift Turtle Logo">
                     <h1 style="margin: 0;">Swift Turtle Labs</h1>
                 </div>
             </div>
