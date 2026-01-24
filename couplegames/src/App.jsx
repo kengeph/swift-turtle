@@ -328,7 +328,7 @@ function App() {
 
           <button
             onClick={startGame}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 md:py-5 px-8 md:px-10 rounded-lg text-2xl md:text-3xl transition-all transform hover:scale-105 shadow-lg"
+            className="bg-green-600 hover:bg-green-700 text-white font-bold py-4 md:py-5 px-8 md:px-10 rounded-lg text-2xl md:text-3xl transition-all transform hover:scale-105 shadow-lg"
           >
             LET THE GAMES BEGIN!
           </button>
@@ -369,13 +369,13 @@ function App() {
           <div className="flex gap-3 md:gap-4 justify-center">
             <button
               onClick={goBack}
-              className="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 md:py-3 px-4 md:px-6 rounded-lg transition-colors text-sm md:text-base"
+              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 md:py-3 px-4 md:px-6 rounded-lg transition-colors text-sm md:text-base"
             >
               ← Back
             </button>
             <button
               onClick={continueToSecondHalf}
-              className="bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 md:py-4 px-6 md:px-8 rounded-lg text-lg md:text-xl transition-all transform hover:scale-105 shadow-lg"
+              className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 md:py-4 px-6 md:px-8 rounded-lg text-lg md:text-xl transition-all transform hover:scale-105 shadow-lg"
             >
               Continue to 2nd Half →
             </button>
@@ -487,13 +487,13 @@ function App() {
           <div className="flex gap-3 md:gap-4 mt-4 md:mt-6">
             <button
               onClick={goBack}
-              className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 md:py-3 px-4 md:px-6 rounded-lg transition-colors text-sm md:text-base"
+              className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 md:py-3 px-4 md:px-6 rounded-lg transition-colors text-sm md:text-base"
             >
               ← Back
             </button>
             <button
               onClick={resetGame}
-              className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 md:py-3 px-4 md:px-6 rounded-lg transition-colors text-sm md:text-base"
+              className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 md:py-3 px-4 md:px-6 rounded-lg transition-colors text-sm md:text-base"
             >
               Play Again
             </button>
