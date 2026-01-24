@@ -253,7 +253,22 @@ function App() {
         setScores(recalculateScores(newWinners))
       }
       
-      setCurrentGame(prev => prev - 1)
+      const newCurrentGame = currentGame - 1
+      
+      // If going back to game 1 (index 0), clear all winners and reset scores
+      if (newCurrentGame === 0) {
+        setWinners({})
+        setScores({ player1: 0, player2: 0 })
+        // Also reset Gram Master state
+        setGramMasterTarget(null)
+        setGramMasterRounds({ player1: [], player2: [] })
+      } else {
+        // Otherwise, just update winners and recalculate scores
+        setWinners(newWinners)
+        setScores(recalculateScores(newWinners))
+      }
+      
+      setCurrentGame(newCurrentGame)
     }
   }
 
