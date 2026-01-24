@@ -294,41 +294,41 @@ function App() {
   // Intro screen
   if (!gameStarted) {
     return (
-      <div className="min-h-screen bg-slate-900 text-slate-50 flex flex-col items-center justify-center p-8">
+      <div className="min-h-screen bg-slate-900 text-slate-50 flex flex-col items-center justify-center p-4 md:p-8">
         <div className="max-w-2xl w-full text-center">
           {/* Back button - hidden on intro since there's nowhere to go back to */}
-          <h1 className="text-5xl font-bold mb-6">Couple's Challenge</h1>
-          <p className="text-xl text-slate-300 mb-8 leading-relaxed">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 md:mb-6">Couple's Challenge</h1>
+          <p className="text-lg md:text-xl text-slate-300 mb-6 md:mb-8 leading-relaxed">
             Welcome to your competitive challenge series! You'll face 10 fun challenges designed to test your skills and creativity.
           </p>
           
-          <div className="bg-slate-800 rounded-lg p-6 mb-6 text-left">
-            <h2 className="text-2xl font-semibold mb-4">How It Works</h2>
-            <div className="space-y-4">
+          <div className="bg-slate-800 rounded-lg p-4 md:p-6 mb-4 md:mb-6 text-left">
+            <h2 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4">How It Works</h2>
+            <div className="space-y-3 md:space-y-4">
               <div>
-                <h3 className="text-lg font-semibold text-blue-400 mb-2">1st Half: At Home (5 Challenges)</h3>
-                <p className="text-slate-300">Start with challenges you can do right at home - testing precision, estimation, and creativity.</p>
+                <h3 className="text-base md:text-lg font-semibold text-blue-400 mb-1 md:mb-2">1st Half: At Home (5 Challenges)</h3>
+                <p className="text-sm md:text-base text-slate-300">Start with challenges you can do right at home - testing precision, estimation, and creativity.</p>
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-pink-400 mb-2">2nd Half: Out on the Town (5 Challenges)</h3>
-                <p className="text-slate-300">Then head out for challenges that will take you around town - hunting, searching, and exploring.</p>
+                <h3 className="text-base md:text-lg font-semibold text-pink-400 mb-1 md:mb-2">2nd Half: Out on the Town (5 Challenges)</h3>
+                <p className="text-sm md:text-base text-slate-300">Then head out for challenges that will take you around town - hunting, searching, and exploring.</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-slate-800 rounded-lg p-6 mb-8">
-            <h2 className="text-2xl font-semibold mb-3">Pick a Prize!</h2>
-            <p className="text-slate-300 mb-4">
+          <div className="bg-slate-800 rounded-lg p-4 md:p-6 mb-6 md:mb-8">
+            <h2 className="text-xl md:text-2xl font-semibold mb-2 md:mb-3">Pick a Prize!</h2>
+            <p className="text-sm md:text-base text-slate-300 mb-3 md:mb-4">
               Before you start, decide on a prize for the winner! Maybe the winner picks where to eat lunch, gets to choose the next movie, or gets a special treat. Make it fun!
             </p>
-            <p className="text-slate-400 italic">
+            <p className="text-xs md:text-sm text-slate-400 italic">
               (Take a moment to discuss and agree on your prize now)
             </p>
           </div>
 
           <button
             onClick={startGame}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg text-2xl transition-all transform hover:scale-105 shadow-lg"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 md:py-4 px-6 md:px-8 rounded-lg text-xl md:text-2xl transition-all transform hover:scale-105 shadow-lg"
           >
             LET THE GAMES BEGIN!
           </button>
@@ -340,42 +340,42 @@ function App() {
   // Transition page between halves
   if (currentGame === -1) {
     return (
-      <div className="min-h-screen bg-slate-900 text-slate-50 flex flex-col items-center justify-center p-8">
+      <div className="min-h-screen bg-slate-900 text-slate-50 flex flex-col items-center justify-center p-4 md:p-8">
         <div className="max-w-2xl w-full text-center">
-          <h1 className="text-4xl font-bold mb-6">1st Half Complete! 🎉</h1>
-          <p className="text-xl text-slate-300 mb-8 leading-relaxed">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4 md:mb-6">1st Half Complete! 🎉</h1>
+          <p className="text-lg md:text-xl text-slate-300 mb-6 md:mb-8 leading-relaxed">
             Great job completing the first half! Now it's time to head over near the mall for the next challenges.
           </p>
           
           {/* Score Display */}
-          <div className="flex justify-between items-center mb-8 bg-slate-800 rounded-lg p-4 max-w-md mx-auto">
+          <div className="flex justify-between items-center mb-6 md:mb-8 bg-slate-800 rounded-lg p-3 md:p-4 max-w-md mx-auto">
             <div className="text-center flex-1">
-              <div className="text-sm text-slate-400 mb-1">Kenny</div>
-              <div className="text-3xl font-bold text-blue-400">{scores.player1}</div>
+              <div className="text-xs md:text-sm text-slate-400 mb-1">Kenny</div>
+              <div className="text-2xl md:text-3xl font-bold text-blue-400">{scores.player1}</div>
             </div>
-            <div className="text-2xl font-bold mx-4">vs</div>
+            <div className="text-xl md:text-2xl font-bold mx-2 md:mx-4">vs</div>
             <div className="text-center flex-1">
-              <div className="text-sm text-slate-400 mb-1">Katie</div>
-              <div className="text-3xl font-bold text-pink-400">{scores.player2}</div>
+              <div className="text-xs md:text-sm text-slate-400 mb-1">Katie</div>
+              <div className="text-2xl md:text-3xl font-bold text-pink-400">{scores.player2}</div>
             </div>
           </div>
           
-          <div className="bg-slate-800 rounded-lg p-6 mb-8">
-            <p className="text-lg text-slate-300">
+          <div className="bg-slate-800 rounded-lg p-4 md:p-6 mb-6 md:mb-8">
+            <p className="text-base md:text-lg text-slate-300">
               Make sure you're ready to go out and explore! The 2nd half challenges will have you hunting, searching, and taking pictures around the mall area.
             </p>
           </div>
 
-          <div className="flex gap-4 justify-center">
+          <div className="flex gap-3 md:gap-4 justify-center">
             <button
               onClick={goBack}
-              className="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+              className="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 md:py-3 px-4 md:px-6 rounded-lg transition-colors text-sm md:text-base"
             >
               ← Back
             </button>
             <button
               onClick={continueToSecondHalf}
-              className="bg-pink-600 hover:bg-pink-700 text-white font-bold py-4 px-8 rounded-lg text-xl transition-all transform hover:scale-105 shadow-lg"
+              className="bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 md:py-4 px-6 md:px-8 rounded-lg text-lg md:text-xl transition-all transform hover:scale-105 shadow-lg"
             >
               Continue to 2nd Half →
             </button>
@@ -392,25 +392,25 @@ function App() {
     const winnerColor = winner === 'player1' ? 'blue' : winner === 'player2' ? 'pink' : null
     
     return (
-      <div className="min-h-screen bg-slate-900 text-slate-50 flex flex-col items-center justify-center p-8">
+      <div className="min-h-screen bg-slate-900 text-slate-50 flex flex-col items-center justify-center p-4 md:p-8">
         <div className="max-w-2xl w-full">
-          <h1 className="text-4xl font-bold text-center mb-8">Final Results</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-center mb-6 md:mb-8">Final Results</h1>
           
           {/* Winner Celebration */}
           {winner !== 'tie' && (
-            <div className={`bg-gradient-to-r rounded-lg p-6 mb-6 border-2 animate-pulse ${
+            <div className={`bg-gradient-to-r rounded-lg p-4 md:p-6 mb-4 md:mb-6 border-2 animate-pulse ${
               winner === 'player1' 
                 ? 'from-blue-600/20 to-blue-800/20 border-blue-500/50' 
                 : 'from-pink-600/20 to-pink-800/20 border-pink-500/50'
             }`}>
               <div className="text-center">
-                <div className="text-5xl mb-3">🎉</div>
-                <h2 className={`text-3xl font-bold mb-2 ${
+                <div className="text-4xl md:text-5xl mb-2 md:mb-3">🎉</div>
+                <h2 className={`text-2xl md:text-3xl font-bold mb-2 ${
                   winner === 'player1' ? 'text-blue-400' : 'text-pink-400'
                 }`}>
                   {winnerName} Wins!
                 </h2>
-                <p className="text-slate-300 text-lg">
+                <p className="text-slate-300 text-base md:text-lg">
                   Congratulations on your victory! 🏆
                 </p>
               </div>
@@ -418,26 +418,26 @@ function App() {
           )}
           
           {winner === 'tie' && (
-            <div className="bg-gradient-to-r from-blue-600/20 to-pink-600/20 rounded-lg p-6 mb-6 border-2 border-slate-500/50">
+            <div className="bg-gradient-to-r from-blue-600/20 to-pink-600/20 rounded-lg p-4 md:p-6 mb-4 md:mb-6 border-2 border-slate-500/50">
               <div className="text-center">
-                <div className="text-5xl mb-3">🤝</div>
-                <h2 className="text-3xl font-bold text-slate-300 mb-2">
+                <div className="text-4xl md:text-5xl mb-2 md:mb-3">🤝</div>
+                <h2 className="text-2xl md:text-3xl font-bold text-slate-300 mb-2">
                   It's a Tie!
                 </h2>
-                <p className="text-slate-300 text-lg">
+                <p className="text-slate-300 text-base md:text-lg">
                   What an evenly matched competition! 🎯
                 </p>
               </div>
             </div>
           )}
           
-          <div className="bg-slate-800 rounded-lg p-6 mb-6">
-            <div className={`flex justify-between items-center mb-4 ${
+          <div className="bg-slate-800 rounded-lg p-4 md:p-6 mb-4 md:mb-6">
+            <div className={`flex justify-between items-center mb-3 md:mb-4 ${
               winner === 'player1' ? 'bg-blue-600/20 rounded p-2 border border-blue-500/50' : ''
             }`}>
-              <div className="text-2xl font-semibold">Kenny</div>
+              <div className="text-xl md:text-2xl font-semibold">Kenny</div>
               <div className={`font-bold text-blue-400 ${
-                winner === 'player1' ? 'text-5xl' : 'text-3xl'
+                winner === 'player1' ? 'text-4xl md:text-5xl' : 'text-2xl md:text-3xl'
               }`}>
                 {scores.player1}
                 {winner === 'player1' && <span className="ml-2">👑</span>}
@@ -446,9 +446,9 @@ function App() {
             <div className={`flex justify-between items-center ${
               winner === 'player2' ? 'bg-pink-600/20 rounded p-2 border border-pink-500/50' : ''
             }`}>
-              <div className="text-2xl font-semibold">Katie</div>
+              <div className="text-xl md:text-2xl font-semibold">Katie</div>
               <div className={`font-bold text-pink-400 ${
-                winner === 'player2' ? 'text-5xl' : 'text-3xl'
+                winner === 'player2' ? 'text-4xl md:text-5xl' : 'text-2xl md:text-3xl'
               }`}>
                 {scores.player2}
                 {winner === 'player2' && <span className="ml-2">👑</span>}
@@ -456,19 +456,19 @@ function App() {
             </div>
           </div>
 
-          <div className="bg-slate-800 rounded-lg p-6 max-h-96 overflow-y-auto">
-            <h2 className="text-2xl font-semibold mb-4">Game Summary</h2>
-            <div className="space-y-3">
+          <div className="bg-slate-800 rounded-lg p-4 md:p-6 max-h-80 md:max-h-96 overflow-y-auto mb-4 md:mb-6">
+            <h2 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4">Game Summary</h2>
+            <div className="space-y-2 md:space-y-3">
               {CHALLENGES.map((challenge, index) => {
                 const winner = winners[index + 1]
                 return (
-                  <div key={challenge.id} className="border-b border-slate-700 pb-3 last:border-0">
+                  <div key={challenge.id} className="border-b border-slate-700 pb-2 md:pb-3 last:border-0">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
-                        <div className="text-sm text-slate-400 mb-1">{challenge.phase}</div>
-                        <div className="font-semibold">Game {challenge.id}: {challenge.title}</div>
+                        <div className="text-xs md:text-sm text-slate-400 mb-1">{challenge.phase}</div>
+                        <div className="font-semibold text-sm md:text-base">Game {challenge.id}: {challenge.title}</div>
                       </div>
-                      <div className={`ml-4 px-3 py-1 rounded ${
+                      <div className={`ml-3 md:ml-4 px-2 md:px-3 py-1 rounded text-xs md:text-sm ${
                         winner === 'player1' 
                           ? 'bg-blue-500 text-white' 
                           : winner === 'player2'
@@ -484,16 +484,16 @@ function App() {
             </div>
           </div>
 
-          <div className="flex gap-4 mt-6">
+          <div className="flex gap-3 md:gap-4 mt-4 md:mt-6">
             <button
               onClick={goBack}
-              className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+              className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 md:py-3 px-4 md:px-6 rounded-lg transition-colors text-sm md:text-base"
             >
               ← Back
             </button>
             <button
               onClick={resetGame}
-              className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+              className="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 md:py-3 px-4 md:px-6 rounded-lg transition-colors text-sm md:text-base"
             >
               Play Again
             </button>
@@ -533,24 +533,24 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-50 flex flex-col items-center justify-center p-8">
+    <div className="min-h-screen bg-slate-900 text-slate-50 flex flex-col items-center justify-center p-4 md:p-8">
       <div className="max-w-2xl w-full">
         {/* Back Button */}
         {currentGame > 0 && (
           <button
             onClick={goBack}
-            className="mb-4 text-slate-400 hover:text-slate-300 transition-colors flex items-center gap-2"
+            className="mb-3 md:mb-4 text-slate-400 hover:text-slate-300 transition-colors flex items-center gap-2 text-sm md:text-base"
           >
             ← Back
           </button>
         )}
 
         {/* Progress Bar */}
-        <div className="mb-8">
+        <div className="mb-6 md:mb-8">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-sm text-slate-400">Game {currentGame + 1} of {CHALLENGES.length}</span>
+            <span className="text-xs md:text-sm text-slate-400">Game {currentGame + 1} of {CHALLENGES.length}</span>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-slate-400">{completedGames} completed</span>
+              <span className="text-xs md:text-sm text-slate-400">{completedGames} completed</span>
               {scoreMismatch && (
                 <span className="text-xs text-yellow-400 bg-yellow-900/30 px-2 py-1 rounded" title="Score total doesn't match completed games">
                   ⚠️
@@ -572,16 +572,16 @@ function App() {
         </div>
 
         {/* Score Display */}
-        <div className="mb-8 bg-slate-800 rounded-lg p-4">
+        <div className="mb-6 md:mb-8 bg-slate-800 rounded-lg p-3 md:p-4">
           <div className="flex justify-between items-center mb-2 relative">
             <div className="text-center flex-1">
-              <div className="text-sm text-slate-400 mb-1">Kenny</div>
-              <div className="text-3xl font-bold text-blue-400">{scores.player1}</div>
+              <div className="text-xs md:text-sm text-slate-400 mb-1">Kenny</div>
+              <div className="text-2xl md:text-3xl font-bold text-blue-400">{scores.player1}</div>
             </div>
-            <div className="text-2xl font-bold mx-4">vs</div>
+            <div className="text-xl md:text-2xl font-bold mx-2 md:mx-4">vs</div>
             <div className="text-center flex-1">
-              <div className="text-sm text-slate-400 mb-1">Katie</div>
-              <div className="text-3xl font-bold text-pink-400">{scores.player2}</div>
+              <div className="text-xs md:text-sm text-slate-400 mb-1">Katie</div>
+              <div className="text-2xl md:text-3xl font-bold text-pink-400">{scores.player2}</div>
             </div>
             {/* Edit Button */}
             <button
@@ -594,9 +594,9 @@ function App() {
           </div>
           {/* Manual Score Adjustment - Hidden by default */}
           {showScoreEdit && (
-            <div className="mt-4 pt-4 border-t border-slate-700">
+            <div className="mt-3 md:mt-4 pt-3 md:pt-4 border-t border-slate-700">
               <div className="text-xs text-slate-500 mb-2 text-center">Score not right? Adjust manually:</div>
-              <div className="flex gap-4 justify-center">
+              <div className="flex gap-3 md:gap-4 justify-center">
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setScores(prev => ({ ...prev, player1: Math.max(0, prev.player1 - 1) }))}
@@ -605,7 +605,7 @@ function App() {
                   >
                     −
                   </button>
-                  <span className="text-sm text-slate-400">Kenny</span>
+                  <span className="text-xs md:text-sm text-slate-400">Kenny</span>
                   <button
                     onClick={() => setScores(prev => ({ ...prev, player1: prev.player1 + 1 }))}
                     className="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-1 px-3 rounded text-sm"
@@ -622,7 +622,7 @@ function App() {
                   >
                     −
                   </button>
-                  <span className="text-sm text-slate-400">Katie</span>
+                  <span className="text-xs md:text-sm text-slate-400">Katie</span>
                   <button
                     onClick={() => setScores(prev => ({ ...prev, player2: prev.player2 + 1 }))}
                     className="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-1 px-3 rounded text-sm"
@@ -637,44 +637,44 @@ function App() {
         </div>
 
         {/* Challenge Card */}
-        <div className="bg-slate-800 rounded-lg p-8 mb-8">
-          <div className="text-sm text-slate-400 mb-2">{challenge.phase}</div>
-          <h1 className="text-3xl font-bold mb-4">
+        <div className="bg-slate-800 rounded-lg p-4 md:p-8 mb-6 md:mb-8">
+          <div className="text-xs md:text-sm text-slate-400 mb-2">{challenge.phase}</div>
+          <h1 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">
             {challenge.title}
           </h1>
-          <p className="text-slate-300 text-lg leading-relaxed mb-4">{description}</p>
+          <p className="text-slate-300 text-base md:text-lg leading-relaxed mb-3 md:mb-4">{description}</p>
           
           {/* Gram Master Round Scoreboard */}
           {currentGame === 1 && (
-            <div className="mt-6 pt-6 border-t border-slate-700">
-              <div className="text-sm text-slate-400 mb-3">Round Scoreboard (Best of 3)</div>
-              <div className="bg-slate-900 rounded-lg p-4 mb-4">
+            <div className="mt-4 md:mt-6 pt-4 md:pt-6 border-t border-slate-700">
+              <div className="text-xs md:text-sm text-slate-400 mb-2 md:mb-3">Round Scoreboard (Best of 3)</div>
+              <div className="bg-slate-900 rounded-lg p-3 md:p-4 mb-3 md:mb-4">
                 <div className="flex justify-between items-center mb-2">
-                  <div className="text-lg font-semibold text-blue-400">Kenny</div>
-                  <div className="text-2xl font-bold text-blue-400">
+                  <div className="text-base md:text-lg font-semibold text-blue-400">Kenny</div>
+                  <div className="text-xl md:text-2xl font-bold text-blue-400">
                     {gramMasterRounds.player1.length} {gramMasterRounds.player1.length === 1 ? 'round' : 'rounds'}
                   </div>
                 </div>
                 <div className="flex justify-between items-center">
-                  <div className="text-lg font-semibold text-pink-400">Katie</div>
-                  <div className="text-2xl font-bold text-pink-400">
+                  <div className="text-base md:text-lg font-semibold text-pink-400">Katie</div>
+                  <div className="text-xl md:text-2xl font-bold text-pink-400">
                     {gramMasterRounds.player2.length} {gramMasterRounds.player2.length === 1 ? 'round' : 'rounds'}
                   </div>
                 </div>
               </div>
-              <div className="text-sm text-slate-400">
+              <div className="text-xs md:text-sm text-slate-400">
                 Round {gramMasterRounds.player1.length + gramMasterRounds.player2.length + 1} of 3
               </div>
             </div>
           )}
           
           {challenge.hasWordleLink && (
-            <div className="mt-4 pt-4 border-t border-slate-700">
+            <div className="mt-3 md:mt-4 pt-3 md:pt-4 border-t border-slate-700">
               <a
                 href="https://garlicbread.vercel.app/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                className="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm md:text-base"
               >
                 📚 Open Wordle Archives (New Tab)
               </a>
@@ -685,32 +685,32 @@ function App() {
         {/* Winner Buttons */}
         {currentGame === 1 ? (
           // Gram Master: Round winner buttons
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3 md:gap-4">
             <button
               onClick={() => handleWinner('player1')}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-lg transition-colors text-xl"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 md:py-4 px-4 md:px-6 rounded-lg transition-colors text-base md:text-xl"
             >
               Kenny Won This Round
             </button>
             <button
               onClick={() => handleWinner('player2')}
-              className="bg-pink-600 hover:bg-pink-700 text-white font-semibold py-4 px-6 rounded-lg transition-colors text-xl"
+              className="bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 md:py-4 px-4 md:px-6 rounded-lg transition-colors text-base md:text-xl"
             >
               Katie Won This Round
             </button>
           </div>
         ) : (
           // Normal challenge: Overall winner buttons
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3 md:gap-4">
             <button
               onClick={() => handleWinner('player1')}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded-lg transition-colors text-xl"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 md:py-4 px-4 md:px-6 rounded-lg transition-colors text-base md:text-xl"
             >
               Kenny Won
             </button>
             <button
               onClick={() => handleWinner('player2')}
-              className="bg-pink-600 hover:bg-pink-700 text-white font-semibold py-4 px-6 rounded-lg transition-colors text-xl"
+              className="bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 md:py-4 px-4 md:px-6 rounded-lg transition-colors text-base md:text-xl"
             >
               Katie Won
             </button>
