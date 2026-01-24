@@ -494,15 +494,57 @@ function App() {
         </div>
 
         {/* Score Display */}
-        <div className="flex justify-between items-center mb-8 bg-slate-800 rounded-lg p-4">
-          <div className="text-center flex-1">
-            <div className="text-sm text-slate-400 mb-1">Kenny</div>
-            <div className="text-3xl font-bold text-blue-400">{scores.player1}</div>
+        <div className="mb-8 bg-slate-800 rounded-lg p-4">
+          <div className="flex justify-between items-center mb-2">
+            <div className="text-center flex-1">
+              <div className="text-sm text-slate-400 mb-1">Kenny</div>
+              <div className="text-3xl font-bold text-blue-400">{scores.player1}</div>
+            </div>
+            <div className="text-2xl font-bold mx-4">vs</div>
+            <div className="text-center flex-1">
+              <div className="text-sm text-slate-400 mb-1">Katie</div>
+              <div className="text-3xl font-bold text-pink-400">{scores.player2}</div>
+            </div>
           </div>
-          <div className="text-2xl font-bold mx-4">vs</div>
-          <div className="text-center flex-1">
-            <div className="text-sm text-slate-400 mb-1">Katie</div>
-            <div className="text-3xl font-bold text-pink-400">{scores.player2}</div>
+          {/* Manual Score Adjustment */}
+          <div className="mt-4 pt-4 border-t border-slate-700">
+            <div className="text-xs text-slate-500 mb-2 text-center">Score not right? Adjust manually:</div>
+            <div className="flex gap-4 justify-center">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setScores(prev => ({ ...prev, player1: Math.max(0, prev.player1 - 1) }))}
+                  className="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-1 px-3 rounded text-sm"
+                  title="Decrease Kenny's score"
+                >
+                  −
+                </button>
+                <span className="text-sm text-slate-400">Kenny</span>
+                <button
+                  onClick={() => setScores(prev => ({ ...prev, player1: prev.player1 + 1 }))}
+                  className="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-1 px-3 rounded text-sm"
+                  title="Increase Kenny's score"
+                >
+                  +
+                </button>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setScores(prev => ({ ...prev, player2: Math.max(0, prev.player2 - 1) }))}
+                  className="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-1 px-3 rounded text-sm"
+                  title="Decrease Katie's score"
+                >
+                  −
+                </button>
+                <span className="text-sm text-slate-400">Katie</span>
+                <button
+                  onClick={() => setScores(prev => ({ ...prev, player2: prev.player2 + 1 }))}
+                  className="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-1 px-3 rounded text-sm"
+                  title="Increase Katie's score"
+                >
+                  +
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
