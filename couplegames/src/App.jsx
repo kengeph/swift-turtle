@@ -456,7 +456,9 @@ function App() {
   const completedGames = currentGame
   const progress = (completedGames / CHALLENGES.length) * 100
   const totalScore = scores.player1 + scores.player2
-  const scoreMismatch = totalScore !== completedGames
+  // Only show warning if mismatch AND we're not in the middle of a game transition
+  // Check if total score matches either current completedGames or completedGames + 1 (if we just completed a game)
+  const scoreMismatch = totalScore !== completedGames && totalScore !== completedGames + 1
   const gramMasterRound = gramMasterRounds.player1.length + gramMasterRounds.player2.length + 1
 
   // Get description with dynamic content
