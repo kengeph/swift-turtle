@@ -430,7 +430,16 @@ function App() {
 
   // Game screen
   const challenge = CHALLENGES[currentGame]
-  const completedGames = Object.keys(winners).length
+  // Calculate completed games - only count games that have a winner entry
+  // For Gram Master (game 2), only count it if all 3 rounds are done
+  const completedGames = Object.keys(winners).filter(gameId => {
+    const gameIndex = parseInt(gameId) - 1
+    // For Gram Master (index 1), only count if all 3 rounds are complete
+    if (gameIndex === 1) {
+      return gramMasterRounds.player1.length + gramMasterRounds.player2.length === 3
+    }
+    return true
+  }).length
   const progress = (completedGames / CHALLENGES.length) * 100
   const gramMasterRound = gramMasterRounds.player1.length + gramMasterRounds.player2.length + 1
 
@@ -517,7 +526,7 @@ function App() {
           {challenge.hasWordleLink && (
             <div className="mt-4 pt-4 border-t border-slate-700">
               <a
-                href="https://wordlearchive.com/"
+                href="https://garlicbread.vercel.app/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
