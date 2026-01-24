@@ -456,9 +456,19 @@ function App() {
   const completedGames = currentGame
   const progress = (completedGames / CHALLENGES.length) * 100
   const totalScore = scores.player1 + scores.player2
-  // Only show warning if mismatch AND we're not in the middle of a game transition
-  // Check if total score matches either current completedGames or completedGames + 1 (if we just completed a game)
-  const scoreMismatch = totalScore !== completedGames && totalScore !== completedGames + 1
+  // Count actual winners up to (but not including) the current game
+  // This gives us the true number of completed games based on winners
+  let actualCompletedGames = 0
+  for (let i = 1; i <= currentGame; i++) {
+    if (winners[i] !== undefined) {
+      actualCompletedGames++
+    }
+  }
+  // Check if current game has a winner (transition state)
+  const currentGameHasWinner = winners[currentGame + 1] !== undefined
+  // Show warning if score doesn't match actual completed games
+  // Exception: if we just completed the current game (transition), allow score to be actualCompletedGames + 1
+  const scoreMismatch = totalScore !== actualCompletedGames && !(currentGameHasWinner && totalScore === actualCompletedGames + 1)
   const gramMasterRound = gramMasterRounds.player1.length + gramMasterRounds.player2.length + 1
 
   // Get description with dynamic content
@@ -503,7 +513,7 @@ function App() {
           </div>
           {scoreMismatch && (
             <div className="mt-2 text-xs text-yellow-400 bg-yellow-900/20 rounded p-2">
-              ⚠️ Warning: Score total ({totalScore}) doesn't match completed games ({completedGames}). Use the edit button to adjust scores.
+              ⚠️ Warning: Score total ({totalScore}) doesn't match completed games ({actualCompletedGames}). Use the edit button to adjust scores.
             </div>
           )}
         </div>
