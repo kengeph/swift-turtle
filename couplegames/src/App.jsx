@@ -455,6 +455,8 @@ function App() {
   // Completed games = current game number (0-indexed, so currentGame is games completed before this one)
   const completedGames = currentGame
   const progress = (completedGames / CHALLENGES.length) * 100
+  const totalScore = scores.player1 + scores.player2
+  const scoreMismatch = totalScore !== completedGames
   const gramMasterRound = gramMasterRounds.player1.length + gramMasterRounds.player2.length + 1
 
   // Get description with dynamic content
@@ -482,7 +484,14 @@ function App() {
         <div className="mb-8">
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm text-slate-400">Game {currentGame + 1} of {CHALLENGES.length}</span>
-            <span className="text-sm text-slate-400">{completedGames} completed</span>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-slate-400">{completedGames} completed</span>
+              {scoreMismatch && (
+                <span className="text-xs text-yellow-400 bg-yellow-900/30 px-2 py-1 rounded" title="Score total doesn't match completed games">
+                  ⚠️
+                </span>
+              )}
+            </div>
           </div>
           <div className="w-full bg-slate-800 rounded-full h-2">
             <div 
@@ -490,6 +499,11 @@ function App() {
               style={{ width: `${progress}%` }}
             ></div>
           </div>
+          {scoreMismatch && (
+            <div className="mt-2 text-xs text-yellow-400 bg-yellow-900/20 rounded p-2">
+              ⚠️ Warning: Score total ({totalScore}) doesn't match completed games ({completedGames}). Use the edit button to adjust scores.
+            </div>
+          )}
         </div>
 
         {/* Score Display */}
