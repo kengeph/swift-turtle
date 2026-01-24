@@ -387,19 +387,72 @@ function App() {
 
   // Results screen
   if (currentGame === CHALLENGES.length) {
+    const winner = scores.player1 > scores.player2 ? 'player1' : scores.player2 > scores.player1 ? 'player2' : 'tie'
+    const winnerName = winner === 'player1' ? 'Kenny' : winner === 'player2' ? 'Katie' : null
+    const winnerColor = winner === 'player1' ? 'blue' : winner === 'player2' ? 'pink' : null
+    
     return (
       <div className="min-h-screen bg-slate-900 text-slate-50 flex flex-col items-center justify-center p-8">
         <div className="max-w-2xl w-full">
           <h1 className="text-4xl font-bold text-center mb-8">Final Results</h1>
           
-          <div className="bg-slate-800 rounded-lg p-6 mb-6">
-            <div className="flex justify-between items-center mb-4">
-              <div className="text-2xl font-semibold">Kenny</div>
-              <div className="text-3xl font-bold text-blue-400">{scores.player1}</div>
+          {/* Winner Celebration */}
+          {winner !== 'tie' && (
+            <div className={`bg-gradient-to-r rounded-lg p-6 mb-6 border-2 animate-pulse ${
+              winner === 'player1' 
+                ? 'from-blue-600/20 to-blue-800/20 border-blue-500/50' 
+                : 'from-pink-600/20 to-pink-800/20 border-pink-500/50'
+            }`}>
+              <div className="text-center">
+                <div className="text-5xl mb-3">🎉</div>
+                <h2 className={`text-3xl font-bold mb-2 ${
+                  winner === 'player1' ? 'text-blue-400' : 'text-pink-400'
+                }`}>
+                  {winnerName} Wins!
+                </h2>
+                <p className="text-slate-300 text-lg">
+                  Congratulations on your victory! 🏆
+                </p>
+              </div>
             </div>
-            <div className="flex justify-between items-center">
+          )}
+          
+          {winner === 'tie' && (
+            <div className="bg-gradient-to-r from-blue-600/20 to-pink-600/20 rounded-lg p-6 mb-6 border-2 border-slate-500/50">
+              <div className="text-center">
+                <div className="text-5xl mb-3">🤝</div>
+                <h2 className="text-3xl font-bold text-slate-300 mb-2">
+                  It's a Tie!
+                </h2>
+                <p className="text-slate-300 text-lg">
+                  What an evenly matched competition! 🎯
+                </p>
+              </div>
+            </div>
+          )}
+          
+          <div className="bg-slate-800 rounded-lg p-6 mb-6">
+            <div className={`flex justify-between items-center mb-4 ${
+              winner === 'player1' ? 'bg-blue-600/20 rounded p-2 border border-blue-500/50' : ''
+            }`}>
+              <div className="text-2xl font-semibold">Kenny</div>
+              <div className={`font-bold text-blue-400 ${
+                winner === 'player1' ? 'text-5xl' : 'text-3xl'
+              }`}>
+                {scores.player1}
+                {winner === 'player1' && <span className="ml-2">👑</span>}
+              </div>
+            </div>
+            <div className={`flex justify-between items-center ${
+              winner === 'player2' ? 'bg-pink-600/20 rounded p-2 border border-pink-500/50' : ''
+            }`}>
               <div className="text-2xl font-semibold">Katie</div>
-              <div className="text-3xl font-bold text-pink-400">{scores.player2}</div>
+              <div className={`font-bold text-pink-400 ${
+                winner === 'player2' ? 'text-5xl' : 'text-3xl'
+              }`}>
+                {scores.player2}
+                {winner === 'player2' && <span className="ml-2">👑</span>}
+              </div>
             </div>
           </div>
 
