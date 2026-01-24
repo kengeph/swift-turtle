@@ -55,7 +55,7 @@ const CHALLENGES = [
     id: 9,
     title: "The Name Tag",
     phase: "2nd Half",
-    description: "Find your own first name (or just your first initial if it's a hard name) on a product or store sign.",
+    description: "Find your own first name on a product or store sign.",
   },
   {
     id: 10,
@@ -157,23 +157,105 @@ function App() {
     if (currentGame === -1) {
       // From transition page, go back to game 5
       setCurrentGame(4)
+      // Remove winner for game 5 if it exists
+      const newWinners = { ...winners }
+      const gameId = 5 // Game 5 is index 4, but stored as ID 5
+      if (newWinners[gameId]) {
+        const removedWinner = newWinners[gameId]
+        delete newWinners[gameId]
+        setWinners(newWinners)
+        // Adjust scores
+        if (removedWinner === 'player1') {
+          setScores(prev => ({ ...prev, player1: Math.max(0, prev.player1 - 1) }))
+        } else if (removedWinner === 'player2') {
+          setScores(prev => ({ ...prev, player2: Math.max(0, prev.player2 - 1) }))
+        }
+      }
     } else if (currentGame === CHALLENGES.length) {
       // From results, go back to last game
       setCurrentGame(CHALLENGES.length - 1)
+      // Remove winner for last game if it exists
+      const newWinners = { ...winners }
+      const gameId = CHALLENGES.length
+      if (newWinners[gameId]) {
+        const removedWinner = newWinners[gameId]
+        delete newWinners[gameId]
+        setWinners(newWinners)
+        // Adjust scores
+        if (removedWinner === 'player1') {
+          setScores(prev => ({ ...prev, player1: Math.max(0, prev.player1 - 1) }))
+        } else if (removedWinner === 'player2') {
+          setScores(prev => ({ ...prev, player2: Math.max(0, prev.player2 - 1) }))
+        }
+      }
     } else if (currentGame > 0) {
       // From a game, go back one
-      setCurrentGame(prev => prev - 1)
-      // Remove the winner for the game we're going back to
+      const gameId = currentGame + 1 // Convert 0-based index to 1-based game ID
       const newWinners = { ...winners }
-      delete newWinners[currentGame]
-      setWinners(newWinners)
-      // Adjust scores if needed
-      const removedWinner = winners[currentGame]
-      if (removedWinner === 'player1') {
-        setScores(prev => ({ ...prev, player1: Math.max(0, prev.player1 - 1) }))
-      } else if (removedWinner === 'player2') {
-        setScores(prev => ({ ...prev, player2: Math.max(0, prev.player2 - 1) }))
+      
+      // Handle Gram Master special case
+      if (currentGame === 1) {
+        // Going back from Gram Master - need to handle rounds
+        const totalRounds = gramMasterRounds.player1.length + gramMasterRounds.player2.length
+        if (totalRounds > 0) {
+          const newRounds = { ...gramMasterRounds }
+          
+          // If all 3 rounds are complete, we need to undo the overall score first
+          if (totalRounds === 3 && winners[gameId]) {
+            // Determine who won overall and undo that score
+            const player1Wins = gramMasterRounds.player1.length
+            const player2Wins = gramMasterRounds.player2.length
+            const overallWinner = player1Wins > player2Wins ? 'player1' : 'player2'
+            if (overallWinner === 'player1') {
+              setScores(prev => ({ ...prev, player1: Math.max(0, prev.player1 - 1) }))
+            } else {
+              setScores(prev => ({ ...prev, player2: Math.max(0, prev.player2 - 1) }))
+            }
+            // Remove the overall winner entry
+            const updatedWinners = { ...winners }
+            delete updatedWinners[gameId]
+            setWinners(updatedWinners)
+          }
+          
+          // Remove the last round - heuristic: remove from the array with more entries
+          // If equal, we can't know for sure, but we'll remove from player1 as default
+          // This is a limitation, but works for most cases
+          if (newRounds.player1.length > newRounds.player2.length) {
+            newRounds.player1.pop()
+          } else if (newRounds.player2.length > newRounds.player1.length) {
+            newRounds.player2.pop()
+          } else if (newRounds.player1.length > 0) {
+            // Equal, remove from player1 (arbitrary but consistent)
+            newRounds.player1.pop()
+          }
+          setGramMasterRounds(newRounds)
+          
+          // Generate new weight for the round we're going back to
+          const remainingRounds = newRounds.player1.length + newRounds.player2.length
+          if (remainingRounds > 0) {
+            const newWeight = Math.floor(Math.random() * (1000 - 50 + 1)) + 50
+            setGramMasterTarget(newWeight)
+          } else {
+            // Going back to first round, reset weight
+            setGramMasterTarget(null)
+          }
+        }
+      } else {
+        // Normal game - remove winner and adjust score
+        if (newWinners[gameId]) {
+          const removedWinner = newWinners[gameId]
+          delete newWinners[gameId]
+          setWinners(newWinners)
+          // Adjust scores
+          if (removedWinner === 'player1') {
+            setScores(prev => ({ ...prev, player1: Math.max(0, prev.player1 - 1) }))
+          } else if (removedWinner === 'player2') {
+            setScores(prev => ({ ...prev, player2: Math.max(0, prev.player2 - 1) }))
+          }
+        }
       }
+      
+      setCurrentGame(prev => prev - 1)
     }
   }
 
@@ -200,6 +282,7 @@ function App() {
     return (
       <div className="min-h-screen bg-slate-900 text-slate-50 flex flex-col items-center justify-center p-8">
         <div className="max-w-2xl w-full text-center">
+          {/* Back button - hidden on intro since there's nowhere to go back to */}
           <h1 className="text-5xl font-bold mb-6">Couple's Challenge</h1>
           <p className="text-xl text-slate-300 mb-8 leading-relaxed">
             Welcome to your competitive challenge series! You'll face 10 fun challenges designed to test your skills and creativity.
@@ -418,7 +501,7 @@ function App() {
           {challenge.hasWordleLink && (
             <div className="mt-4 pt-4 border-t border-slate-700">
               <a
-                href="https://www.nytimes.com/crosswords/game/wordle-archive"
+                href="https://wordlearchive.com/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-block bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
