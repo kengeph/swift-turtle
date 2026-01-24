@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>404 - Page Not Found - Swift Turtle Labs</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="alternate icon" href="/favicon.ico">
+    <link rel='stylesheet' href='bootstrap/css/bootstrap.css' type='text/css'/>
+    <link rel='stylesheet' href='style.css' type='text/css'/>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background: #0f172a;
+            color: #f8fafc;
+        }
+        .wrapper {
+            background: #0f172a;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container-fluid {
+            text-align: center;
+            max-width: 600px;
+        }
+        .title {
+            background: linear-gradient(135deg, #166534 0%, #15803d 50%, #16a34a 100%) !important;
+            color: #f8fafc !important;
+            border-bottom: 3px solid #22c55e;
+            padding: 25px 20px !important;
+            margin-bottom: 40px;
+        }
+        .title h1 {
+            color: #f8fafc !important;
+            font-size: 2.5em !important;
+            margin: 0 !important;
+        }
+        .title img {
+            height: 70px;
+            width: auto;
+        }
+        @media (max-width: 600px) {
+            .title {
+                padding: 20px 15px !important;
+            }
+            .title img {
+                height: 50px;
+            }
+            .title h1 {
+                font-size: 1.8em !important;
+            }
+        }
+        .error-content {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 40px 30px;
+            margin: 30px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .error-content h2 {
+            font-size: 3em;
+            color: #f8fafc;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 600px) {
+            .error-content h2 {
+                font-size: 2em;
+            }
+        }
+        .error-content p {
+            font-size: 1.2em;
+            color: #cbd5e1;
+            margin-bottom: 30px;
+        }
+        .home-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #166534 0%, #15803d 50%, #16a34a 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .home-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+            color: white;
+            text-decoration: none;
+        }
+        .footer {
+            background: #1e293b;
+            color: #94a3b8;
+            border-top: 2px solid #22c55e;
+            margin-top: 40px;
+            padding: 15px;
+        }
+        .footer a {
+            color: #60a5fa;
+        }
+        .footer a:hover {
+            color: #93c5fd;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12 title" style="display: flex; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                    <img src="Turtle with Transparent background.png" alt="Swift Turtle Logo">
+                    <h1 style="margin: 0;">Swift Turtle Labs</h1>
+                </div>
+            </div>
+            
+            <div class="error-content">
+                <h2>404</h2>
+                <p>Nothing found here</p>
+                <p>The page you're looking for doesn't exist or has been moved.</p>
+                <a href="/" class="home-button">← Go Home</a>
+            </div>
+            
+            <div class="row footer">
+                | By: <a href="mailto:Kengeph@gmail.com">Kenny Anderson</a> |
+            </div>
+        </div>
+    </div>
+</body>
+</html>
