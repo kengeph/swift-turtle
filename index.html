@@ -10,6 +10,35 @@
     <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
+        body {
+            background: #0f172a;
+            color: #f8fafc;
+        }
+        .wrapper {
+            background: #0f172a;
+        }
+        .title {
+            background: #1e293b !important;
+            color: #f8fafc !important;
+            border-bottom: 3px solid #3b82f6;
+        }
+        .title h1 {
+            color: #f8fafc !important;
+        }
+        h4 {
+            color: #cbd5e1;
+        }
+        .footer {
+            background: #1e293b;
+            color: #94a3b8;
+            border-top: 2px solid #3b82f6;
+        }
+        .footer a {
+            color: #60a5fa;
+        }
+        .footer a:hover {
+            color: #93c5fd;
+        }
         .tile-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -33,7 +62,7 @@
             color: white;
             text-decoration: none;
             transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
             min-height: 120px;
             display: flex;
             flex-direction: column;
@@ -48,7 +77,7 @@
         }
         .tile:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.5);
             text-decoration: none;
             color: white;
         }
@@ -68,26 +97,39 @@
         .tile.secret.show {
             display: flex;
         }
-        .tile.advent { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
-        .tile.mens { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
-        .tile.photo { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
-        .tile.river { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
-        .tile.couple { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
+        .tile.advent { 
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 50%, #7f1d1d 100%);
+        }
+        .tile.mens { 
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e40af 100%);
+        }
+        .tile.photo { 
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        .tile.river { 
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+        .tile.couple { 
+            background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+        }
         .secret-toggle {
             text-align: center;
             margin: 20px 0;
         }
         .secret-toggle button {
-            background: #6c757d;
-            color: white;
-            border: none;
+            background: #334155;
+            color: #e2e8f0;
+            border: 2px solid #475569;
             padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
             font-size: 1em;
+            transition: all 0.3s;
         }
         .secret-toggle button:hover {
-            background: #5a6268;
+            background: #475569;
+            border-color: #64748b;
+            color: #f8fafc;
         }
     </style>
 </head>
