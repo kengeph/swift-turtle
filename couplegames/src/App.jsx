@@ -533,7 +533,7 @@ function App() {
   }
 
   return (
-    <div className="h-screen overflow-hidden bg-slate-900 text-slate-50 flex flex-col items-center justify-center p-4 md:p-8">
+    <div className="h-screen overflow-hidden bg-slate-900 text-slate-50 flex flex-col items-center justify-start pt-6 md:pt-8 p-4 md:p-8">
       <div className="max-w-2xl w-full">
         {/* Back Button */}
         {currentGame > 0 && (
