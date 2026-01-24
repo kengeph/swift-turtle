@@ -1,19 +1,77 @@
 <!-- This is Swift Turtle Labs Website -->
 <html>
-
 <head>
     <title>Swift Turtle Labs</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="alternate icon" href="/favicon.ico">
     <link rel='stylesheet' href='bootstrap/css/bootstrap.css' type='text/css'/>
-    <link rel='stylesheet' href='bootstrap/js/bootstrap.min.js' type='text/css'/>
-    <link rel='stylesheet' href='bootstrap/css/bootstrap.css.map' dftype='text/css'/>    
-	<link rel='stylesheet' href='style.css' type='text/css'/>
-	<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-	<link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
-    <script type="text/javascript" src="jquery-1.6.4.min.js"></script>
-    
-	<script type="text/javascript" src='javascript.js'></script>
+    <link rel='stylesheet' href='style.css' type='text/css'/>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        .tile-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .tile {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            color: white;
+            text-decoration: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .tile:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+            text-decoration: none;
+            color: white;
+        }
+        .tile h3 {
+            margin: 0;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        .tile.secret {
+            display: none;
+        }
+        .tile.secret.show {
+            display: flex;
+        }
+        .tile.advent { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .tile.mens { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .tile.photo { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .tile.river { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .tile.couple { background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); }
+        .secret-toggle {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .secret-toggle button {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .secret-toggle button:hover {
+            background: #5a6268;
+        }
+    </style>
 </head>
 <body>
     <div class="wrapper">
@@ -23,32 +81,62 @@
             </div>
             <div class="row halfpush"></div>
             <div class="row" style="text-align: center">
-                <div class="col-xs-12"><h4>You probably meant to get to the Christmas Advent Calendar or a Men's ministry page . Feel free to use the links below.</h4></div>
+                <div class="col-xs-12"><h4>Select a project to get started</h4></div>
             </div>
+            
+            <div class="tile-container">
+                <a href="AdventCalendar/index.html" class="tile advent">
+                    <h3>🎄 Christmas Advent Calendar</h3>
+                </a>
+                
+                <a href="mensministry/home.html" class="tile mens">
+                    <h3>👔 Men's Ministry</h3>
+                </a>
+                
+                <a href="photoscavenger/index.html" class="tile photo secret">
+                    <h3>📸 Photo Scavenger</h3>
+                </a>
+                
+                <a href="riverscavenger/index.html" class="tile river secret">
+                    <h3>🌊 River Scavenger</h3>
+                </a>
+                
+                <a href="couplegames/index.html" class="tile couple secret">
+                    <h3>💑 Couple's Challenge</h3>
+                </a>
             </div>
-            <div class="row" style="text-align: center">
-                <a type="button" class="btn btn-primary btn-xlg" href="AdventCalendar/index.html">Christmas Advent Calendar</a>
+            
+            <div class="secret-toggle">
+                <button onclick="toggleSecretTiles()" id="secretToggle">Show Secret Tiles</button>
             </div>
-            <div class="row" style="text-align: center">
-                <h3>- OR -</h3>
-            </div>
-            <div class="row" style="text-align: center">
-                <a type="button" class="btn btn-primary btn-xlg" href="mensministry/index.html">Men's Small Group - Weekly Availability Form</a>
-            </div>
-            <div class="row" style="text-align: center">
-                <h3>- OR -</h3>
-            </div>
-            <div class="row" style="text-align: center">
-                <a type="button" class="btn btn-primary btn-xlg" href="mensministry/33.html">Watch The Authentic Manhood Trailer</a>
-            </div>
+            
             <div class="push"></div>
-        </div> <!--End of container-->
-    </div>  <!--End of wrapper-->
+        </div>
+    </div>
     <div class="container-fluid">
         <div class="row footer">
-			| By: <a href="mailto:Kengeph@gmail.com">Kenny Anderson</a> |
+            | By: <a href="mailto:Kengeph@gmail.com">Kenny Anderson</a> |
         </div>
-    </div>    
-</body>
+    </div>
     
+    <script>
+        let secretTilesVisible = false;
+        
+        function toggleSecretTiles() {
+            secretTilesVisible = !secretTilesVisible;
+            const tiles = document.querySelectorAll('.tile.secret');
+            const button = document.getElementById('secretToggle');
+            
+            tiles.forEach(tile => {
+                if (secretTilesVisible) {
+                    tile.classList.add('show');
+                } else {
+                    tile.classList.remove('show');
+                }
+            });
+            
+            button.textContent = secretTilesVisible ? 'Hide Secret Tiles' : 'Show Secret Tiles';
+        }
+    </script>
+</body>
 </html>
