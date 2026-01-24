@@ -82,10 +82,7 @@ function App() {
   }, [currentGame, gramMasterTarget])
 
   const handleWinner = (player) => {
-    const newWinners = { ...winners, [currentGame + 1]: player }
-    setWinners(newWinners)
-    
-    // Handle Gram Master best of 3
+    // Handle Gram Master best of 3 - don't add to winners until all rounds are done
     if (currentGame === 1) {
       const newRounds = { ...gramMasterRounds }
       if (player === 'player1') {
@@ -98,16 +95,21 @@ function App() {
       // Check if best of 3 is complete
       const totalRounds = newRounds.player1.length + newRounds.player2.length
       if (totalRounds < 3) {
-        // Reset for next round
+        // Reset for next round - don't add to winners yet
         const newWeight = Math.floor(Math.random() * (1000 - 50 + 1)) + 50
         setGramMasterTarget(newWeight)
         return // Don't advance yet
       } else {
-        // Determine overall winner
+        // All 3 rounds complete - now add to winners and score
         const player1Wins = newRounds.player1.length
         const player2Wins = newRounds.player2.length
         const overallWinner = player1Wins > player2Wins ? 'player1' : 'player2'
         
+        // Add to winners object
+        const newWinners = { ...winners, [currentGame + 1]: overallWinner }
+        setWinners(newWinners)
+        
+        // Update scores
         if (overallWinner === 'player1') {
           setScores(prev => ({ ...prev, player1: prev.player1 + 1 }))
         } else {
@@ -115,6 +117,10 @@ function App() {
         }
       }
     } else {
+      // Normal game - add to winners and score immediately
+      const newWinners = { ...winners, [currentGame + 1]: player }
+      setWinners(newWinners)
+      
       // Normal scoring
       if (player === 'player1') {
         setScores(prev => ({ ...prev, player1: prev.player1 + 1 }))
@@ -430,16 +436,10 @@ function App() {
 
   // Game screen
   const challenge = CHALLENGES[currentGame]
-  // Calculate completed games - only count games that have a winner entry
-  // For Gram Master (game 2), only count it if all 3 rounds are done
-  const completedGames = Object.keys(winners).filter(gameId => {
-    const gameIndex = parseInt(gameId) - 1
-    // For Gram Master (index 1), only count if all 3 rounds are complete
-    if (gameIndex === 1) {
-      return gramMasterRounds.player1.length + gramMasterRounds.player2.length === 3
-    }
-    return true
-  }).length
+  // Calculate completed games - count games that have a winner entry
+  // Since we only add Gram Master to winners when all 3 rounds are done,
+  // we can simply count all entries in winners
+  const completedGames = Object.keys(winners).length
   const progress = (completedGames / CHALLENGES.length) * 100
   const gramMasterRound = gramMasterRounds.player1.length + gramMasterRounds.player2.length + 1
 
