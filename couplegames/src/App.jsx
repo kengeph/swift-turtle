@@ -297,38 +297,38 @@ function App() {
       <div className="h-screen overflow-hidden bg-slate-900 text-slate-50 flex flex-col items-center justify-center p-4 md:p-8">
         <div className="max-w-2xl w-full text-center">
           {/* Back button - hidden on intro since there's nowhere to go back to */}
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 md:mb-6">Couple's Challenge</h1>
-          <p className="text-lg md:text-xl text-slate-300 mb-6 md:mb-8 leading-relaxed">
+          <h1 className="text-5xl md:text-6xl font-bold mb-5 md:mb-6">Couple's Challenge</h1>
+          <p className="text-xl md:text-2xl text-slate-300 mb-7 md:mb-8 leading-relaxed">
             Welcome to your competitive challenge series! You'll face 10 fun challenges designed to test your skills and creativity.
           </p>
           
-          <div className="bg-slate-800 rounded-lg p-4 md:p-6 mb-4 md:mb-6 text-left">
-            <h2 className="text-xl md:text-2xl font-semibold mb-3 md:mb-4">How It Works</h2>
-            <div className="space-y-3 md:space-y-4">
+          <div className="bg-slate-800 rounded-lg p-5 md:p-6 mb-5 md:mb-6 text-left">
+            <h2 className="text-2xl md:text-3xl font-semibold mb-4 md:mb-5">How It Works</h2>
+            <div className="space-y-4 md:space-y-5">
               <div>
-                <h3 className="text-base md:text-lg font-semibold text-blue-400 mb-1 md:mb-2">1st Half: At Home (5 Challenges)</h3>
-                <p className="text-sm md:text-base text-slate-300">Start with challenges you can do right at home - testing precision, estimation, and creativity.</p>
+                <h3 className="text-lg md:text-xl font-semibold text-blue-400 mb-2 md:mb-3">1st Half: At Home (5 Challenges)</h3>
+                <p className="text-base md:text-lg text-slate-300">Start with challenges you can do right at home - testing precision, estimation, and creativity.</p>
               </div>
               <div>
-                <h3 className="text-base md:text-lg font-semibold text-pink-400 mb-1 md:mb-2">2nd Half: Out on the Town (5 Challenges)</h3>
-                <p className="text-sm md:text-base text-slate-300">Then head out for challenges that will take you around town - hunting, searching, and exploring.</p>
+                <h3 className="text-lg md:text-xl font-semibold text-pink-400 mb-2 md:mb-3">2nd Half: Out on the Town (5 Challenges)</h3>
+                <p className="text-base md:text-lg text-slate-300">Then head out for challenges that will take you around town - hunting, searching, and exploring.</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-slate-800 rounded-lg p-4 md:p-6 mb-6 md:mb-8">
-            <h2 className="text-xl md:text-2xl font-semibold mb-2 md:mb-3">Pick a Prize!</h2>
-            <p className="text-sm md:text-base text-slate-300 mb-3 md:mb-4">
+          <div className="bg-slate-800 rounded-lg p-5 md:p-6 mb-7 md:mb-8">
+            <h2 className="text-2xl md:text-3xl font-semibold mb-3 md:mb-4">Pick a Prize!</h2>
+            <p className="text-base md:text-lg text-slate-300 mb-4 md:mb-5">
               Before you start, decide on a prize for the winner! Maybe the winner picks where to eat lunch, gets to choose the next movie, or gets a special treat. Make it fun!
             </p>
-            <p className="text-xs md:text-sm text-slate-400 italic">
+            <p className="text-sm md:text-base text-slate-400 italic">
               (Take a moment to discuss and agree on your prize now)
             </p>
           </div>
 
           <button
             onClick={startGame}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 md:py-4 px-6 md:px-8 rounded-lg text-xl md:text-2xl transition-all transform hover:scale-105 shadow-lg"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 md:py-5 px-8 md:px-10 rounded-lg text-2xl md:text-3xl transition-all transform hover:scale-105 shadow-lg"
           >
             LET THE GAMES BEGIN!
           </button>
@@ -342,26 +342,26 @@ function App() {
     return (
       <div className="h-screen overflow-hidden bg-slate-900 text-slate-50 flex flex-col items-center justify-center p-4 md:p-8">
         <div className="max-w-2xl w-full text-center">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4 md:mb-6">1st Half Complete! 🎉</h1>
-          <p className="text-lg md:text-xl text-slate-300 mb-6 md:mb-8 leading-relaxed">
+          <h1 className="text-4xl md:text-5xl font-bold mb-5 md:mb-6">1st Half Complete! 🎉</h1>
+          <p className="text-xl md:text-2xl text-slate-300 mb-7 md:mb-8 leading-relaxed">
             Great job completing the first half! Now it's time to head over near the mall for the next challenges.
           </p>
           
           {/* Score Display */}
-          <div className="flex justify-between items-center mb-6 md:mb-8 bg-slate-800 rounded-lg p-3 md:p-4 max-w-md mx-auto">
+          <div className="flex justify-between items-center mb-7 md:mb-8 bg-slate-800 rounded-lg p-5 md:p-6 max-w-md mx-auto">
             <div className="text-center flex-1">
-              <div className="text-xs md:text-sm text-slate-400 mb-1">Kenny</div>
-              <div className="text-2xl md:text-3xl font-bold text-blue-400">{scores.player1}</div>
+              <div className="text-sm md:text-base text-slate-400 mb-2">Kenny</div>
+              <div className="text-4xl md:text-5xl font-bold text-blue-400">{scores.player1}</div>
             </div>
-            <div className="text-xl md:text-2xl font-bold mx-2 md:mx-4">vs</div>
+            <div className="text-2xl md:text-3xl font-bold mx-3 md:mx-5">vs</div>
             <div className="text-center flex-1">
-              <div className="text-xs md:text-sm text-slate-400 mb-1">Katie</div>
-              <div className="text-2xl md:text-3xl font-bold text-pink-400">{scores.player2}</div>
+              <div className="text-sm md:text-base text-slate-400 mb-2">Katie</div>
+              <div className="text-4xl md:text-5xl font-bold text-pink-400">{scores.player2}</div>
             </div>
           </div>
           
-          <div className="bg-slate-800 rounded-lg p-4 md:p-6 mb-6 md:mb-8">
-            <p className="text-base md:text-lg text-slate-300">
+          <div className="bg-slate-800 rounded-lg p-5 md:p-6 mb-7 md:mb-8">
+            <p className="text-lg md:text-xl text-slate-300">
               Make sure you're ready to go out and explore! The 2nd half challenges will have you hunting, searching, and taking pictures around the mall area.
             </p>
           </div>
@@ -533,7 +533,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-50 flex flex-col items-center justify-center p-4 md:p-8">
+    <div className="h-screen overflow-hidden bg-slate-900 text-slate-50 flex flex-col items-center justify-center p-4 md:p-8">
       <div className="max-w-2xl w-full">
         {/* Back Button */}
         {currentGame > 0 && (
@@ -546,11 +546,11 @@ function App() {
         )}
 
         {/* Progress Bar */}
-        <div className="mb-6 md:mb-8">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-xs md:text-sm text-slate-400">Game {currentGame + 1} of {CHALLENGES.length}</span>
+        <div className="mb-7 md:mb-8">
+          <div className="flex justify-between items-center mb-3">
+            <span className="text-sm md:text-base text-slate-400">Game {currentGame + 1} of {CHALLENGES.length}</span>
             <div className="flex items-center gap-2">
-              <span className="text-xs md:text-sm text-slate-400">{completedGames} completed</span>
+              <span className="text-sm md:text-base text-slate-400">{completedGames} completed</span>
               {scoreMismatch && (
                 <span className="text-xs text-yellow-400 bg-yellow-900/30 px-2 py-1 rounded" title="Score total doesn't match completed games">
                   ⚠️
@@ -558,35 +558,35 @@ function App() {
               )}
             </div>
           </div>
-          <div className="w-full bg-slate-800 rounded-full h-2">
+          <div className="w-full bg-slate-800 rounded-full h-3">
             <div 
-              className="bg-blue-500 h-2 rounded-full transition-all duration-300"
+              className="bg-blue-500 h-3 rounded-full transition-all duration-300"
               style={{ width: `${progress}%` }}
             ></div>
           </div>
           {scoreMismatch && (
-            <div className="mt-2 text-xs text-yellow-400 bg-yellow-900/20 rounded p-2">
+            <div className="mt-3 text-xs text-yellow-400 bg-yellow-900/20 rounded p-2">
               ⚠️ Warning: Score total ({totalScore}) doesn't match completed games ({actualCompletedGames}). Use the edit button to adjust scores.
             </div>
           )}
         </div>
 
         {/* Score Display */}
-        <div className="mb-6 md:mb-8 bg-slate-800 rounded-lg p-3 md:p-4">
-          <div className="flex justify-between items-center mb-2 relative">
+        <div className="mb-7 md:mb-8 bg-slate-800 rounded-lg p-5 md:p-6">
+          <div className="flex justify-between items-center mb-3 relative">
             <div className="text-center flex-1">
-              <div className="text-xs md:text-sm text-slate-400 mb-1">Kenny</div>
-              <div className="text-2xl md:text-3xl font-bold text-blue-400">{scores.player1}</div>
+              <div className="text-sm md:text-base text-slate-400 mb-2">Kenny</div>
+              <div className="text-4xl md:text-5xl font-bold text-blue-400">{scores.player1}</div>
             </div>
-            <div className="text-xl md:text-2xl font-bold mx-2 md:mx-4">vs</div>
+            <div className="text-2xl md:text-3xl font-bold mx-3 md:mx-5">vs</div>
             <div className="text-center flex-1">
-              <div className="text-xs md:text-sm text-slate-400 mb-1">Katie</div>
-              <div className="text-2xl md:text-3xl font-bold text-pink-400">{scores.player2}</div>
+              <div className="text-sm md:text-base text-slate-400 mb-2">Katie</div>
+              <div className="text-4xl md:text-5xl font-bold text-pink-400">{scores.player2}</div>
             </div>
             {/* Edit Button */}
             <button
               onClick={() => setShowScoreEdit(!showScoreEdit)}
-              className="absolute top-0 right-0 text-slate-500 hover:text-slate-300 text-xs px-2 py-1"
+              className="absolute top-0 right-0 text-slate-500 hover:text-slate-300 text-sm px-2 py-1"
               title="Edit scores"
             >
               ✏️
@@ -637,12 +637,12 @@ function App() {
         </div>
 
         {/* Challenge Card */}
-        <div className="bg-slate-800 rounded-lg p-4 md:p-8 mb-6 md:mb-8">
-          <div className="text-xs md:text-sm text-slate-400 mb-2">{challenge.phase}</div>
-          <h1 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4">
+        <div className="bg-slate-800 rounded-lg p-5 md:p-8 mb-7 md:mb-8">
+          <div className="text-sm md:text-base text-slate-400 mb-3">{challenge.phase}</div>
+          <h1 className="text-3xl md:text-4xl font-bold mb-4 md:mb-5">
             {challenge.title}
           </h1>
-          <p className="text-slate-300 text-base md:text-lg leading-relaxed mb-3 md:mb-4">{description}</p>
+          <p className="text-slate-300 text-lg md:text-xl leading-relaxed mb-4 md:mb-5">{description}</p>
           
           {/* Gram Master Round Scoreboard */}
           {currentGame === 1 && (
@@ -685,32 +685,32 @@ function App() {
         {/* Winner Buttons */}
         {currentGame === 1 ? (
           // Gram Master: Round winner buttons
-          <div className="grid grid-cols-2 gap-3 md:gap-4">
+          <div className="grid grid-cols-2 gap-4 md:gap-5">
             <button
               onClick={() => handleWinner('player1')}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 md:py-4 px-4 md:px-6 rounded-lg transition-colors text-base md:text-xl"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 md:py-5 px-5 md:px-6 rounded-lg transition-colors text-lg md:text-xl"
             >
               Kenny Won This Round
             </button>
             <button
               onClick={() => handleWinner('player2')}
-              className="bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 md:py-4 px-4 md:px-6 rounded-lg transition-colors text-base md:text-xl"
+              className="bg-pink-600 hover:bg-pink-700 text-white font-semibold py-4 md:py-5 px-5 md:px-6 rounded-lg transition-colors text-lg md:text-xl"
             >
               Katie Won This Round
             </button>
           </div>
         ) : (
           // Normal challenge: Overall winner buttons
-          <div className="grid grid-cols-2 gap-3 md:gap-4">
+          <div className="grid grid-cols-2 gap-4 md:gap-5">
             <button
               onClick={() => handleWinner('player1')}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 md:py-4 px-4 md:px-6 rounded-lg transition-colors text-base md:text-xl"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 md:py-5 px-5 md:px-6 rounded-lg transition-colors text-lg md:text-xl"
             >
               Kenny Won
             </button>
             <button
               onClick={() => handleWinner('player2')}
-              className="bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 md:py-4 px-4 md:px-6 rounded-lg transition-colors text-base md:text-xl"
+              className="bg-pink-600 hover:bg-pink-700 text-white font-semibold py-4 md:py-5 px-5 md:px-6 rounded-lg transition-colors text-lg md:text-xl"
             >
               Katie Won
             </button>
