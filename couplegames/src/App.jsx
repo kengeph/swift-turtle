@@ -294,7 +294,7 @@ function App() {
   // Intro screen
   if (!gameStarted) {
     return (
-      <div className="min-h-screen bg-slate-900 text-slate-50 flex flex-col items-center justify-center p-4 md:p-8">
+      <div className="h-screen overflow-hidden bg-slate-900 text-slate-50 flex flex-col items-center justify-center p-4 md:p-8">
         <div className="max-w-2xl w-full text-center">
           {/* Back button - hidden on intro since there's nowhere to go back to */}
           <h1 className="text-4xl md:text-5xl font-bold mb-4 md:mb-6">Couple's Challenge</h1>
@@ -340,7 +340,7 @@ function App() {
   // Transition page between halves
   if (currentGame === -1) {
     return (
-      <div className="min-h-screen bg-slate-900 text-slate-50 flex flex-col items-center justify-center p-4 md:p-8">
+      <div className="h-screen overflow-hidden bg-slate-900 text-slate-50 flex flex-col items-center justify-center p-4 md:p-8">
         <div className="max-w-2xl w-full text-center">
           <h1 className="text-3xl md:text-4xl font-bold mb-4 md:mb-6">1st Half Complete! 🎉</h1>
           <p className="text-lg md:text-xl text-slate-300 mb-6 md:mb-8 leading-relaxed">
@@ -392,7 +392,7 @@ function App() {
     const winnerColor = winner === 'player1' ? 'blue' : winner === 'player2' ? 'pink' : null
     
     return (
-      <div className="min-h-screen bg-slate-900 text-slate-50 flex flex-col items-center justify-center p-4 md:p-8">
+      <div className="h-screen overflow-hidden bg-slate-900 text-slate-50 flex flex-col items-center justify-center p-4 md:p-8">
         <div className="max-w-2xl w-full">
           <h1 className="text-3xl md:text-4xl font-bold text-center mb-6 md:mb-8">Final Results</h1>
           
