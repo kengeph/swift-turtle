@@ -11,7 +11,7 @@ const CHALLENGES = [
     id: 2,
     title: "The Gram Master",
     phase: "1st Half",
-    description: "Target Weight: {targetWeight} grams. Find one item in the house that weighs as close to {targetWeight}g as possible. (Use a kitchen scale to verify). Best out of 3 rounds wins.",
+    description: "This challenge has 3 rounds. Each round, a random target weight will be shown. Find one item in the house that weighs as close to that target as possible. (Use a kitchen scale to verify). The person who wins the most rounds out of 3 wins the challenge.",
     needsRandomWeight: true,
   },
   {
@@ -202,7 +202,7 @@ function App() {
         <div className="max-w-2xl w-full text-center">
           <h1 className="text-5xl font-bold mb-6">Couple's Challenge</h1>
           <p className="text-xl text-slate-300 mb-8 leading-relaxed">
-            Welcome to your competitive challenge series! You'll face 10 fun challenges designed to test your skills, creativity, and teamwork.
+            Welcome to your competitive challenge series! You'll face 10 fun challenges designed to test your skills and creativity.
           </p>
           
           <div className="bg-slate-800 rounded-lg p-6 mb-6 text-left">
@@ -214,7 +214,7 @@ function App() {
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-pink-400 mb-2">2nd Half: Out on the Town (5 Challenges)</h3>
-                <p className="text-slate-300">Then head out for challenges that will take you around town - hunting, searching, and exploring together.</p>
+                <p className="text-slate-300">Then head out for challenges that will take you around town - hunting, searching, and exploring.</p>
               </div>
             </div>
           </div>
@@ -249,6 +249,19 @@ function App() {
           <p className="text-xl text-slate-300 mb-8 leading-relaxed">
             Great job completing the first half! Now it's time to head over near the mall for the next challenges.
           </p>
+          
+          {/* Score Display */}
+          <div className="flex justify-between items-center mb-8 bg-slate-800 rounded-lg p-4 max-w-md mx-auto">
+            <div className="text-center flex-1">
+              <div className="text-sm text-slate-400 mb-1">Kenny</div>
+              <div className="text-3xl font-bold text-blue-400">{scores.player1}</div>
+            </div>
+            <div className="text-2xl font-bold mx-4">vs</div>
+            <div className="text-center flex-1">
+              <div className="text-sm text-slate-400 mb-1">Katie</div>
+              <div className="text-3xl font-bold text-pink-400">{scores.player2}</div>
+            </div>
+          </div>
           
           <div className="bg-slate-800 rounded-lg p-6 mb-8">
             <p className="text-lg text-slate-300">
@@ -349,7 +362,9 @@ function App() {
   // Get description with dynamic content
   let description = challenge.description
   if (challenge.needsRandomWeight && gramMasterTarget) {
-    description = description.replace('{targetWeight}', gramMasterTarget)
+    // For Gram Master, show the current round's target weight
+    const roundNum = gramMasterRounds.player1.length + gramMasterRounds.player2.length + 1
+    description = `Round ${roundNum} of 3: Find an item that weighs as close to ${gramMasterTarget} grams as possible. (Use a kitchen scale to verify). The person who wins the most rounds out of 3 wins the challenge.`
   }
 
   return (
@@ -397,11 +412,6 @@ function App() {
           <div className="text-sm text-slate-400 mb-2">{challenge.phase}</div>
           <h1 className="text-3xl font-bold mb-4">
             {challenge.title}
-            {currentGame === 1 && gramMasterRounds.player1.length + gramMasterRounds.player2.length < 3 && (
-              <span className="ml-3 text-lg font-normal text-slate-400">
-                (Round {gramMasterRound} of 3)
-              </span>
-            )}
           </h1>
           <p className="text-slate-300 text-lg leading-relaxed mb-4">{description}</p>
           
