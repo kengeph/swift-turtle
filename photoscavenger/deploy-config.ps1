@@ -25,8 +25,9 @@ Write-Host "Deploying $ConfigFile to FTP server..." -ForegroundColor Green
 Write-Host "Host: $($ftpConfig.host)" -ForegroundColor Cyan
 Write-Host "Remote Path: $($ftpConfig.remotePath)" -ForegroundColor Cyan
 
-# Create FTP request
-$ftpUri = "ftp://$($ftpConfig.host):$($ftpConfig.port)$($ftpConfig.remotePath)/$ConfigFile"
+# Create FTP request - ensure remote path doesn't have leading slash for URI
+$remotePath = $ftpConfig.remotePath.TrimStart('/')
+$ftpUri = "ftp://$($ftpConfig.host):$($ftpConfig.port)/$remotePath/$ConfigFile"
 Write-Host "Uploading to: $ftpUri" -ForegroundColor Yellow
 
 try {
@@ -36,9 +37,11 @@ try {
     $ftpRequest.Method = [System.Net.WebRequestMethods+Ftp]::UploadFile
     $ftpRequest.UseBinary = $true
     $ftpRequest.UsePassive = $true
+    $ftpRequest.EnableSsl = $false
     
     # Read file content
-    $fileContent = [System.IO.File]::ReadAllBytes((Resolve-Path $ConfigFile))
+    $filePath = (Resolve-Path $ConfigFile).Path
+    $fileContent = [System.IO.File]::ReadAllBytes($filePath)
     $ftpRequest.ContentLength = $fileContent.Length
     
     # Upload file
@@ -54,5 +57,34 @@ try {
     
 } catch {
     Write-Host "Error uploading file: $($_.Exception.Message)" -ForegroundColor Red
-    exit 1
+    Write-Host "Trying alternative method..." -ForegroundColor Yellow
+    
+    # Try alternative: change directory first, then upload
+    try {
+        $ftpUri = "ftp://$($ftpConfig.host):$($ftpConfig.port)/$ConfigFile"
+        $ftpRequest = [System.Net.FtpWebRequest]::Create($ftpUri)
+        $ftpRequest.Credentials = New-Object System.Net.NetworkCredential($ftpConfig.username, $ftpConfig.password)
+        $ftpRequest.Method = [System.Net.WebRequestMethods+Ftp]::UploadFile
+        $ftpRequest.UseBinary = $true
+        $ftpRequest.UsePassive = $true
+        $ftpRequest.EnableSsl = $false
+        
+        # Set working directory
+        $ftpRequest.UseBinary = $true
+        $filePath = (Resolve-Path $ConfigFile).Path
+        $fileContent = [System.IO.File]::ReadAllBytes($filePath)
+        $ftpRequest.ContentLength = $fileContent.Length
+        
+        $requestStream = $ftpRequest.GetRequestStream()
+        $requestStream.Write($fileContent, 0, $fileContent.Length)
+        $requestStream.Close()
+        
+        $response = $ftpRequest.GetResponse()
+        Write-Host "Success! $ConfigFile uploaded successfully (alternative method)." -ForegroundColor Green
+        $response.Close()
+    } catch {
+        Write-Host "Alternative method also failed: $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host "Please upload manually via FTP client to: $($ftpConfig.remotePath)/$ConfigFile" -ForegroundColor Yellow
+        exit 1
+    }
 }
