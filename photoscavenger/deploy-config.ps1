@@ -1,8 +1,11 @@
 # PowerShell script to deploy firebase-config.js to InfinityFree hosting via FTP
 # Usage: .\deploy-config.ps1
+# Optionally generates firebase-config.js from template if it doesn't exist:
+#   $env:FIREBASE_API_KEY="your-key"; .\deploy-config.ps1
 
 param(
-    [string]$ConfigFile = "firebase-config.js"
+    [string]$ConfigFile = "firebase-config.js",
+    [string]$ApiKey = $env:FIREBASE_API_KEY
 )
 
 # Check if ftp-config.json exists
@@ -12,10 +15,29 @@ if (-not (Test-Path "ftp-config.json")) {
     exit 1
 }
 
-# Check if firebase-config.js exists
+# Check if firebase-config.js exists, generate from template if needed
 if (-not (Test-Path $ConfigFile)) {
-    Write-Host "Error: $ConfigFile not found!" -ForegroundColor Red
-    exit 1
+    Write-Host "$ConfigFile not found. Attempting to generate from template..." -ForegroundColor Yellow
+    
+    if ($ApiKey) {
+        Write-Host "Generating $ConfigFile from template using API key..." -ForegroundColor Cyan
+        $templateFile = "firebase-config.template.js"
+        if (Test-Path $templateFile) {
+            $templateContent = Get-Content $templateFile -Raw
+            $configContent = $templateContent -replace '\{\{FIREBASE_API_KEY\}\}', $ApiKey
+            $configContent | Out-File -FilePath $ConfigFile -Encoding utf8 -NoNewline
+            Write-Host "✅ $ConfigFile generated successfully!" -ForegroundColor Green
+        } else {
+            Write-Host "Error: Template file $templateFile not found!" -ForegroundColor Red
+            exit 1
+        }
+    } else {
+        Write-Host "Error: $ConfigFile not found and no API key provided!" -ForegroundColor Red
+        Write-Host "Either:" -ForegroundColor Yellow
+        Write-Host "  1. Create $ConfigFile manually, or" -ForegroundColor Cyan
+        Write-Host "  2. Set environment variable: `$env:FIREBASE_API_KEY='your-key'; .\deploy-config.ps1" -ForegroundColor Cyan
+        exit 1
+    }
 }
 
 # Read FTP config

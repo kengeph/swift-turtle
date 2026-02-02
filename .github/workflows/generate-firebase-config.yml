@@ -1,0 +1,50 @@
+name: Generate Firebase Config
+
+on:
+  workflow_dispatch:  # Manual trigger
+  push:
+    branches:
+      - main
+    paths:
+      - 'photoscavenger/firebase-config.template.js'
+      - '.github/workflows/generate-firebase-config.yml'
+
+jobs:
+  generate-config:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate firebase-config.js
+        working-directory: ./photoscavenger
+        run: |
+          # Read template and replace placeholder with secret
+          sed "s/{{FIREBASE_API_KEY}}/${{ secrets.FIREBASEAPIKEY }}/g" firebase-config.template.js > firebase-config.js
+          
+          # Verify the file was created
+          if [ ! -f firebase-config.js ]; then
+            echo "Error: firebase-config.js was not created!"
+            exit 1
+          fi
+          
+          # Verify API key was replaced (should not contain placeholder)
+          if grep -q "{{FIREBASE_API_KEY}}" firebase-config.js; then
+            echo "Error: API key placeholder was not replaced!"
+            exit 1
+          fi
+          
+          echo "✅ firebase-config.js generated successfully"
+
+      - name: Upload generated config
+        uses: actions/upload-artifact@v4
+        with:
+          name: firebase-config
+          path: photoscavenger/firebase-config.js
+          retention-days: 1
+
+      - name: Show summary
+        run: |
+          echo "## Firebase Config Generated" >> $GITHUB_STEP_SUMMARY
+          echo "✅ firebase-config.js has been generated with the API key from GitHub secrets." >> $GITHUB_STEP_SUMMARY
+          echo "📥 Download the artifact to deploy it to your hosting." >> $GITHUB_STEP_SUMMARY
